@@ -1,0 +1,47 @@
+.viz 
+  width:98%
+  max-width:1000px
+  height: 700px
+  margin: 0 auto
+    
+  &>div
+    float:left
+    height:100%
+
+  .viz-core
+    width: 70%
+
+    .organisation
+      cursor: pointer
+      stroke: #fff
+      
+    .person
+      cursor:pointer
+      opacity: 0
+      transition: opacity .4s
+    
+    .person-unknown
+      cursor:default
+
+
+.viz-info
+  font-size: 12px
+  width:30%
+  height:100%
+  padding:1em 0
+  
+  .viz-info-content
+    height:100%
+  
+  .info-title
+    font-weight: bold
+    font-size:18px
+  
+  .info-headline
+    font-weight:bold
+    margin:1em 0
+    
+  .info-person-organisations
+    padding-left:20px
+    li
+      margin-bottom:5px
