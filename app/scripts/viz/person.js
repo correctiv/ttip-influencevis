@@ -14,12 +14,10 @@ var usColor = '#284bdd';
 var unknownColor = '#ddd';
 var unknownPersonCount = 120;
 
-var activePerson = null;
-
 var force = d3.layout.force()
   .size([shared.width, shared.height])
   .gravity(0.3)
-  .charge(-125)
+  .charge(-100)
   .on('tick', tick);
 
 var x = d3.scale.ordinal()
@@ -60,25 +58,29 @@ function init(svgBase) {
   force.nodes(data.persons).start();  
 
   shared.dispatch.on('reset.person', function(){
-    activePerson = null;
+    shared.activePerson = null;
+    handleMouseOut();
   });
+
 }
 
-function handleClick(d){
+function handleClick(e){
 
   // inactivate all active persons and organisations
   shared.resetActiveOrganisation();
   shared.resetActivePerson();
 
+
   // organisation is already active. 
-  if(activePerson && activePerson === d.name){
-    activePerson = null;
+  if(shared.activePerson && shared.activePerson === e.name){
+    shared.activePerson = null;
     infoArea.reset();
 
     return false;
   }
 
-  activePerson = d.name;
+  shared.activePerson = e.name;
+  shared.activeOrganisation = null;
 
   d3.select(this)
     .style({
@@ -86,12 +88,22 @@ function handleClick(d){
       'stroke-width' : '3px'
     });
 
-  infoArea.setPersonData(d);
+  infoArea.setPersonData(e);
+
+  handleMouseEnter(e);
+
+  svg.selectAll('.connection')
+    .remove();
+
+  drawLinks(e);
 }
 
-function handleMouseMove(){
-   var point = d3.mouse(this);
-   tooltip.setPosition({x: point[0], y: point[1] });
+function handleMouseMove(e){
+
+  if(!shared.activePerson || shared.activePerson === e.name){
+    var point = d3.mouse(this);
+    tooltip.setPosition({x: point[0], y: point[1] });
+  }
 }
 
 function handleMouseEnter(e) {
@@ -101,10 +113,19 @@ function handleMouseEnter(e) {
     return false;
   }
 
-  // update infoarea
-  //infoArea.setPersonData(e);
-  tooltip.show('person', { title : e.name, subtitle : e.ttip_institution, count : e.jobs.length });
 
+  if((!shared.activePerson && !shared.activeOrganisation) || e.name === shared.activePerson || e.orgaIds.indexOf(shared.activeOrganisation) !== -1){
+    // update tooltip
+    tooltip.show('person', { title : e.name, subtitle : e.ttip_institution, count : e.jobs.length });
+  }
+
+
+  if(!shared.activePerson && !shared.activeOrganisation){
+    drawLinks(e);
+  }
+}
+
+function drawLinks(e){
   // reduce opacity of all other nodes
   personNodes
     .filter(function(p) {
@@ -112,7 +133,7 @@ function handleMouseEnter(e) {
     })
     .style({
       opacity: .25
-    })
+    });
 
   // create links
   var links = [];
@@ -135,13 +156,15 @@ function handleMouseEnter(e) {
     });
 
   shared.drawConnections(svg, links);
-
 }
 
 function handleMouseOut(e) {
 
   tooltip.hide();
 
+  if(shared.activePerson || shared.activeOrganisation){
+    return false;
+  }
 
   d3.selectAll('.person-in-organisation')
     .style({

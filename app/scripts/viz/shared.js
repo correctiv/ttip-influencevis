@@ -15,6 +15,9 @@ var innerArc = d3.svg.arc()
   .outerRadius(radius - 70)
   .innerRadius(radius - 70);
 
+var activePerson = null;
+var activeOrganisation = null;
+
 dispatch.on('reset.shared', function(){
   resetActiveOrganisation();
   resetActivePerson();
@@ -72,6 +75,8 @@ function getLink(svg, d){
 }
 
 function resetActiveOrganisation(){
+  activeOrganisation = null;
+
   d3.selectAll('.organisation')
     .style({
       stroke: '#fff',
@@ -80,10 +85,13 @@ function resetActiveOrganisation(){
 }
 
 function resetActivePerson(){
+  activePerson = null;
+
   d3.selectAll('.person')
     .style({
       stroke: 'none'
     });
+
 }
 
 
@@ -100,5 +108,7 @@ module.exports = {
   width: width,
   height: height,
   radius: radius,
-  dispatch : dispatch
+  dispatch : dispatch,
+  activePerson : activePerson,
+  activeOrganisation : activeOrganisation
 };

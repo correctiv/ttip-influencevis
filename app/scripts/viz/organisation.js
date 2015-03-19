@@ -10,8 +10,6 @@ var arc = d3.svg.arc()
   .outerRadius(shared.radius - 15)
   .innerRadius(shared.radius - 70);
 
-var activeOrganisation = null;
-
 var pieSort = function(a, b) {
   var n = b.count - a.count;
   if (n) {
@@ -85,27 +83,29 @@ function init(baseSvg, d) {
     .attr('d', arc)
     .style('fill', 'none');
 
-  shared.dispatch.on('reset.organisation', function(){
-    activeOrganisation = null;
-  });
 
+  shared.dispatch.on('reset.organisation', function(){
+    shared.activeOrganisation = null;
+    handleMouseOut();
+  });
 }
 
-function handleClick(d){
+function handleClick(e){
 
   // inactivate all active persons and organisations
   shared.resetActiveOrganisation();
   shared.resetActivePerson();
 
   // organisation is already active. 
-  if(activeOrganisation && activeOrganisation === d.data.name){
-    activeOrganisation = null;
+  if(shared.activeOrganisation && shared.activeOrganisation === e.data.name){
+    shared.activeOrganisation = null;
     infoArea.reset();
 
     return false;
   }
 
-  activeOrganisation = d.data.name;
+  shared.activeOrganisation = e.data.name;
+  shared.activePerson = null;
   
   d3.select(this)
     .style({
@@ -113,18 +113,35 @@ function handleClick(d){
       'stroke-width' : '3px'
     });
 
-  infoArea.setOrganisationData(d.data);
+  infoArea.setOrganisationData(e.data);
+  handleMouseEnter(e);
+
+  svg.selectAll('.connection')
+    .remove();
+
+  drawLinks(e);
 }
 
-function handleMouseMove(){
-  var point = d3.mouse(this);
-  tooltip.setPosition({x: point[0] + shared.width / 2 , y: point[1] + shared.height / 2  });
+function handleMouseMove(e){
+  if(!shared.activeOrganisation || shared.activeOrganisation === e.data.name){
+    var point = d3.mouse(this);
+    tooltip.setPosition({x: point[0] + shared.width / 2 , y: point[1] + shared.height / 2  });
+  }
 }
 
 function handleMouseEnter(e) {
 
-  tooltip.show('organisation', { title : e.data.name, count : e.data.count});
+  if(!shared.activeOrganisation || shared.activeOrganisation === e.data.name){
+    tooltip.show('organisation', { title : e.data.name, count : e.data.count});
+  }
 
+  if(!shared.activeOrganisation && !shared.activePerson){
+    drawLinks(e);
+  }
+
+}
+
+function drawLinks(e){
   var activeOrgaId = e.data.id;
 
   var links = [];
@@ -150,12 +167,18 @@ function handleMouseEnter(e) {
       return p.orgaIds.indexOf(activeOrgaId) === -1;
     })
     .style('opacity', .25);
-
+    
 }
 
 function handleMouseOut(e) {
 
   tooltip.hide();
+
+  if(shared.activeOrganisation || shared.activePerson){
+    return false;
+  }
+
+  
 
   d3.selectAll('.person')
     .style('opacity', 1);
