@@ -85,11 +85,7 @@ function init(d){
     chapters: chapters
   };
 
-  console.log(chapters);
-
 }
-
-
 
 function getData(){
   return data;

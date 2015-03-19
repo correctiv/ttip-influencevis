@@ -10,6 +10,7 @@ var arc = d3.svg.arc()
   .outerRadius(shared.radius - 15)
   .innerRadius(shared.radius - 70);
 
+var activeOrganisation = null;
 
 var pieSort = function(a, b) {
   var n = b.count - a.count;
@@ -71,7 +72,8 @@ function init(baseSvg, d) {
     .on({
       mouseenter: handleMouseEnter,
       mouseleave: handleMouseOut,
-      mousemove: handleMouseMove
+      mousemove: handleMouseMove,
+      click: handleClick
     });
 
   // add organisations
@@ -83,6 +85,35 @@ function init(baseSvg, d) {
     .attr('d', arc)
     .style('fill', 'none');
 
+  shared.dispatch.on('reset.organisation', function(){
+    activeOrganisation = null;
+  });
+
+}
+
+function handleClick(d){
+
+  // inactivate all active persons and organisations
+  shared.resetActiveOrganisation();
+  shared.resetActivePerson();
+
+  // organisation is already active. 
+  if(activeOrganisation && activeOrganisation === d.data.name){
+    activeOrganisation = null;
+    infoArea.reset();
+
+    return false;
+  }
+
+  activeOrganisation = d.data.name;
+  
+  d3.select(this)
+    .style({
+      stroke: '#555',
+      'stroke-width' : '3px'
+    });
+
+  infoArea.setOrganisationData(d.data);
 }
 
 function handleMouseMove(){
@@ -93,9 +124,6 @@ function handleMouseMove(){
 function handleMouseEnter(e) {
 
   tooltip.show('organisation', { title : e.data.name, count : e.data.count});
-
-  d3.select(this)
-    .style('stroke', '#555');
 
   var activeOrgaId = e.data.id;
 
@@ -128,9 +156,6 @@ function handleMouseEnter(e) {
 function handleMouseOut(e) {
 
   tooltip.hide();
-
-  d3.select(this)
-    .style('stroke', '#fff');
 
   d3.selectAll('.person')
     .style('opacity', 1);

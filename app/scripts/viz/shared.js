@@ -2,6 +2,8 @@
 
 var d3 = require('d3');
 var utils = require('../utils');
+var infoArea = require('./info');
+var dispatch = d3.dispatch('reset');
 
 var width = parseInt(d3.select('#visualization').style('width')),
   height = parseInt(d3.select('#visualization').style('height')),
@@ -12,6 +14,12 @@ var diagonal = d3.svg.diagonal();
 var innerArc = d3.svg.arc()
   .outerRadius(radius - 70)
   .innerRadius(radius - 70);
+
+dispatch.on('reset.shared', function(){
+  resetActiveOrganisation();
+  resetActivePerson();
+  infoArea.reset();
+});
 
 function appendCircleMask(svg) {
   svg
@@ -60,8 +68,24 @@ function getLink(svg, d){
     arcCentroid[0] += width / 2;
     arcCentroid[1] += height / 2;
 
-    return {target : { x :arcCentroid[0], y : arcCentroid[1] }, source : { x : personCentroid[0], y : personCentroid[1] }};
+    return {data: d.data, target : { x :arcCentroid[0], y : arcCentroid[1] }, source : { x : personCentroid[0], y : personCentroid[1] }};
 }
+
+function resetActiveOrganisation(){
+  d3.selectAll('.organisation')
+    .style({
+      stroke: '#fff',
+      'stroke-width' : '1px'
+    });
+}
+
+function resetActivePerson(){
+  d3.selectAll('.person')
+    .style({
+      stroke: 'none'
+    });
+}
+
 
 // public functions
 module.exports = {
@@ -70,8 +94,11 @@ module.exports = {
   appendConnectionGroup : appendConnectionGroup,
   createBaseSVG : createBaseSVG,
   drawConnections: drawConnections,
+  resetActiveOrganisation: resetActiveOrganisation,
+  resetActivePerson: resetActivePerson,
   getLink: getLink,
   width: width,
   height: height,
-  radius: radius
+  radius: radius,
+  dispatch : dispatch
 };

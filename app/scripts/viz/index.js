@@ -5,10 +5,11 @@ var tooltip = require('./tooltip');
 var dataHandler = require('./datahandler');
 var organisation = require('./organisation');
 var person = require('./person');
+var shared = require('./shared');
 
 function init(){
 
-  infoArea.init();
+  infoArea.init(shared);
   tooltip.init();
 
   var svg = shared.createBaseSVG();

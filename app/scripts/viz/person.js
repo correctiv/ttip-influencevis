@@ -14,6 +14,8 @@ var usColor = '#284bdd';
 var unknownColor = '#ddd';
 var unknownPersonCount = 120;
 
+var activePerson = null;
+
 var force = d3.layout.force()
   .size([shared.width, shared.height])
   .gravity(0.3)
@@ -40,7 +42,8 @@ function init(svgBase) {
   personNodes.on({
       mouseenter: handleMouseEnter,
       mouseleave: handleMouseOut,
-      mousemove: handleMouseMove
+      mousemove: handleMouseMove,
+      click: handleClick
     })
 
   // do a transition at the beginning
@@ -55,6 +58,35 @@ function init(svgBase) {
 
   // handle force
   force.nodes(data.persons).start();  
+
+  shared.dispatch.on('reset.person', function(){
+    activePerson = null;
+  });
+}
+
+function handleClick(d){
+
+  // inactivate all active persons and organisations
+  shared.resetActiveOrganisation();
+  shared.resetActivePerson();
+
+  // organisation is already active. 
+  if(activePerson && activePerson === d.name){
+    activePerson = null;
+    infoArea.reset();
+
+    return false;
+  }
+
+  activePerson = d.name;
+
+  d3.select(this)
+    .style({
+      stroke: '#555',
+      'stroke-width' : '3px'
+    });
+
+  infoArea.setPersonData(d);
 }
 
 function handleMouseMove(){
@@ -109,6 +141,7 @@ function handleMouseEnter(e) {
 function handleMouseOut(e) {
 
   tooltip.hide();
+
 
   d3.selectAll('.person-in-organisation')
     .style({
