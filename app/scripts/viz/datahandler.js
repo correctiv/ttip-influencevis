@@ -4,6 +4,7 @@ var data = {
 };
 
 var organisationCounts = {};
+var chapters = {};
 
 function init(d){
 
@@ -26,6 +27,13 @@ function init(d){
         organisationCounts[job.organisation]++;
       }
     });
+
+    // handle chapter data
+    if(person.ttip_chapter && utils.isUndefined(chapters[person.ttip_chapter])){
+      chapters[person.ttip_chapter] = [person.name];
+    }else if(person.ttip_chapter && !utils.isUndefined(chapters[person.ttip_chapter])){
+      chapters[person.ttip_chapter].push(person.name);
+    }
 
     // sort jobs alphabetically
     person.jobs.sort(function(a,b){
@@ -73,8 +81,11 @@ function init(d){
   data = {
     persons : persons,
     personsInOrganisations : personsInOrganisations,
-    organisations : organisations
-  }
+    organisations : organisations,
+    chapters: chapters
+  };
+
+  console.log(chapters);
 
 }
 
