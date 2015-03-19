@@ -2,6 +2,7 @@ var d3 = require('d3');
 var utils = require('../utils');
 var shared = require('./shared');
 var infoArea = require('./info');
+var tooltip = require('./tooltip');
 var dataHandler = require('./datahandler');
 
 var data = null;
@@ -38,7 +39,8 @@ function init(svgBase) {
   // add eventhandler
   personNodes.on({
       mouseenter: handleMouseEnter,
-      mouseleave: handleMouseOut
+      mouseleave: handleMouseOut,
+      mousemove: handleMouseMove
     })
 
   // do a transition at the beginning
@@ -55,6 +57,11 @@ function init(svgBase) {
   force.nodes(data.persons).start();  
 }
 
+function handleMouseMove(){
+   var point = d3.mouse(this);
+   tooltip.setPosition({x: point[0], y: point[1] });
+}
+
 function handleMouseEnter(e) {
 
   // do nothing if it's a grey dot 
@@ -63,7 +70,8 @@ function handleMouseEnter(e) {
   }
 
   // update infoarea
-  infoArea.setPersonData(e);
+  //infoArea.setPersonData(e);
+  tooltip.show('person', { title : e.name, subtitle : e.ttip_institution, count : e.jobs.length });
 
   // reduce opacity of all other nodes
   personNodes
@@ -100,7 +108,7 @@ function handleMouseEnter(e) {
 
 function handleMouseOut(e) {
 
-  infoArea.reset();
+  tooltip.hide();
 
   d3.selectAll('.person-in-organisation')
     .style({

@@ -1,6 +1,7 @@
 var d3 = require('d3');
 var shared = require('./shared');
 var infoArea = require('./info');
+var tooltip = require('./tooltip');
 var dataHandler = require('./datahandler');
 var organisation = require('./organisation');
 var person = require('./person');
@@ -8,6 +9,7 @@ var person = require('./person');
 function init(){
 
   infoArea.init();
+  tooltip.init();
 
   var svg = shared.createBaseSVG();
   shared.appendCircleMask(svg);

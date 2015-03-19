@@ -2,6 +2,7 @@ var d3 = require('d3');
 var shared = require('./shared');
 var infoArea = require('./info');
 var dataHandler = require('./datahandler');
+var tooltip = require('./tooltip');
 
 var svg = null;
 var data = null;
@@ -69,7 +70,8 @@ function init(baseSvg, d) {
     })
     .on({
       mouseenter: handleMouseEnter,
-      mouseleave: handleMouseOut
+      mouseleave: handleMouseOut,
+      mousemove: handleMouseMove
     });
 
   // add organisations
@@ -83,8 +85,14 @@ function init(baseSvg, d) {
 
 }
 
+function handleMouseMove(){
+  var point = d3.mouse(this);
+  tooltip.setPosition({x: point[0] + shared.width / 2 , y: point[1] + shared.height / 2  });
+}
+
 function handleMouseEnter(e) {
-  infoArea.setOrganisationData(e.data);
+
+  tooltip.show('organisation', { title : e.data.name, count : e.data.count});
 
   d3.select(this)
     .style('stroke', '#555');
@@ -119,7 +127,7 @@ function handleMouseEnter(e) {
 
 function handleMouseOut(e) {
 
-  infoArea.reset();
+  tooltip.hide();
 
   d3.select(this)
     .style('stroke', '#fff');

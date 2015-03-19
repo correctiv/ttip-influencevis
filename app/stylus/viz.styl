@@ -3,8 +3,10 @@
   max-width:1000px
   height: 700px
   margin: 0 auto
+  position: relative
     
-  &>div
+  .viz-core
+  .viz-info
     float:left
     height:100%
 
@@ -45,3 +47,18 @@
     padding-left:20px
     li
       margin-bottom:5px
+
+#tooltip
+  background:rgba(255,255,255,.85)
+  pointer-events:none
+  position:absolute
+  padding:1em
+  font-size:12px
+  max-width:200px
+  
+  .tooltip-title
+    font-weight: bold
+    margin-bottom:5px
+  
+  .tooltip-person-text
+    margin-bottom:5px
