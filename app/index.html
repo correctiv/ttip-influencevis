@@ -29,16 +29,36 @@
         <div class="info-title">{{name}}</div>
         <div class="info-subtitle">TTIP Institution: {{ttip_institution}}</div>
 
+        {{#hasJobs}}
         <div class="info-headline">Biographie</div>
 
         <ul class="info-person-organisations">
+
         {{#jobs}}
           <li>
-            <strong>{{organisation}}</strong><br />
-            {{position}}
+            <strong>{{organisation}}</strong>
+            {{#position}}<br />{{position}} {{/position}}
+            {{#dateLabel}}<br /><i>{{dateLabel}}</i>{{/dateLabel}}
           </li>
         {{/jobs}}
         </ul>
+
+        {{/hasJobs}}
+
+        {{#hasChapters}}
+
+        <div class="info-headline">Kapitel</div> 
+
+        <ul class="info-person-organisations">
+
+        {{#chapters}}
+          <li>{{.}}</li>
+        {{/chapters}}
+        </ul> 
+
+        {{/hasChapters}}
+
+        
       </div>
 
     </script>
@@ -51,8 +71,15 @@
 
         <div class="info-headline">Organisation</div>
 
-        <div class="info-title">{{name}}</div>
-        <div class="info-subtitle">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloremque hic, quos ipsa. Dicta unde modi ab. Quod et debitis repellendus facere quasi, nulla sit rem accusantium tempore necessitatibus molestiae natus!</div>
+        <div class="info-title">{{id}}</div>
+        <div class="info-subtitle">Folgende Personen haben oder hatten Verbindungen zu dieser Organisation:</div>
+
+        <ul class="info-organisation-persons">
+        {{#persons}}
+          <li><span class="color-box" style="background-color: {{color}};"></span>{{name}}</li>
+        {{/persons}}
+        </ul>
+
 
       </div>
 

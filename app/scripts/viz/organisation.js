@@ -10,15 +10,12 @@ var arc = d3.svg.arc()
   .outerRadius(shared.radius - 15)
   .innerRadius(shared.radius - 70);
 
-var pieSort = function(a, b) {
-  var n = b.count - a.count;
-  if (n) {
-    return n;
-  }
+var colors = ['#d62728', '#c0c0c0','#dedede', '#1f77b4']
 
-  if(b.id < a.id){
+var pieSort = function(a, b) {
+  if(b.sortIndex < a.sortIndex){
     return -1;
-  }else if(b.id > a.id){
+  }else if(b.sortIndex > a.sortIndex){
     return 1;
   }else{
     return 0;
@@ -46,7 +43,6 @@ var line = d3.svg.line()
   })
   .interpolate('basis');
 
-
 function init(baseSvg, d) {
 
   svg = baseSvg;
@@ -60,10 +56,10 @@ function init(baseSvg, d) {
     .enter()
     .append('path')
     .classed('organisation', true)
-    .attr('d', arc)
+    .attr('d', arc)   
     .style({
       fill: function(d) {
-        return shared.color(d.data.id);
+        return colors[d.data.sortIndex];
       },
       opacity: .8
     })
@@ -95,16 +91,18 @@ function handleClick(e){
   // inactivate all active persons and organisations
   shared.resetActiveOrganisation();
   shared.resetActivePerson();
-
+  shared.resetActiveChapterPersons();
+  
   // organisation is already active. 
-  if(shared.activeOrganisation && shared.activeOrganisation === e.data.name){
+  if(shared.activeOrganisation && shared.activeOrganisation === e.data.id){
     shared.activeOrganisation = null;
+    
     infoArea.reset();
 
     return false;
   }
 
-  shared.activeOrganisation = e.data.name;
+  shared.activeOrganisation = e.data.id;
   shared.activePerson = null;
   
   d3.select(this)
@@ -123,7 +121,7 @@ function handleClick(e){
 }
 
 function handleMouseMove(e){
-  if(!shared.activeOrganisation || shared.activeOrganisation === e.data.name){
+  if(!shared.activeOrganisation || shared.activeOrganisation === e.data.id){
     var point = d3.mouse(this);
     tooltip.setPosition({x: point[0] + shared.width / 2 , y: point[1] + shared.height / 2  });
   }
@@ -131,8 +129,8 @@ function handleMouseMove(e){
 
 function handleMouseEnter(e) {
 
-  if(!shared.activeOrganisation || shared.activeOrganisation === e.data.name){
-    tooltip.show('organisation', { title : e.data.name, count : e.data.count});
+  if(!shared.activeOrganisation || shared.activeOrganisation === e.data.id){
+    tooltip.show('organisation', { title : e.data.id, count : e.data.count});
   }
 
   if(!shared.activeOrganisation && !shared.activePerson){
@@ -178,13 +176,8 @@ function handleMouseOut(e) {
     return false;
   }
 
-  
-
-  d3.selectAll('.person')
-    .style('opacity', 1);
-
-  svg.selectAll('.connection')
-    .remove();
+  d3.selectAll('.person').style('opacity', 1);
+  svg.selectAll('.connection').remove();
 }
 
 

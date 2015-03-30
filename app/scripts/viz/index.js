@@ -14,7 +14,9 @@ function init(){
 
   var svg = shared.createBaseSVG();
   shared.appendCircleMask(svg);
+  shared.appendChapterCircleGroup(svg);
   shared.appendConnectionGroup(svg); 
+
     
   d3.json('data/ttip.json', function(err, data) { 
     dataHandler.init(data);

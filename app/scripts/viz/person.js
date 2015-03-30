@@ -9,9 +9,6 @@ var data = null;
 var svg = null;
 var personNodes = null;
 
-var euColor = '#db2e4c';
-var usColor = '#284bdd';
-var unknownColor = '#ddd';
 var unknownPersonCount = 120;
 
 var force = d3.layout.force()
@@ -30,7 +27,10 @@ function init(svgBase) {
   data = dataHandler.getData();
 
   // add data we need for the visualization
-  addDataAttributes();
+  data.persons.forEach(function(person) {
+    person.cx = x(person.isEU ? 1 : 0);
+    person.cy = shared.height * .5;
+  });
   // add grey dots
   addUnknownPersons();
 
@@ -66,10 +66,14 @@ function init(svgBase) {
 
 function handleClick(e){
 
+  if(e.isUnknown){
+    return false;
+  }
+
   // inactivate all active persons and organisations
   shared.resetActiveOrganisation();
   shared.resetActivePerson();
-
+  shared.resetActiveChapterPersons();
 
   // organisation is already active. 
   if(shared.activePerson && shared.activePerson === e.name){
@@ -85,7 +89,8 @@ function handleClick(e){
   d3.select(this)
     .style({
       stroke: '#555',
-      'stroke-width' : '3px'
+      'stroke-width' : '3px',
+      opacity : 1
     });
 
   infoArea.setPersonData(e);
@@ -96,14 +101,13 @@ function handleClick(e){
     .remove();
 
   drawLinks(e);
+
+  handleChapter(d3.select(this), e);
 }
 
 function handleMouseMove(e){
-
-  if(!shared.activePerson || shared.activePerson === e.name){
-    var point = d3.mouse(this);
-    tooltip.setPosition({x: point[0], y: point[1] });
-  }
+  var point = d3.mouse(this);
+  tooltip.setPosition({x: point[0], y: point[1] });
 }
 
 function handleMouseEnter(e) {
@@ -113,15 +117,87 @@ function handleMouseEnter(e) {
     return false;
   }
 
-
-  if((!shared.activePerson && !shared.activeOrganisation) || e.name === shared.activePerson || e.orgaIds.indexOf(shared.activeOrganisation) !== -1){
-    // update tooltip
-    tooltip.show('person', { title : e.name, subtitle : e.ttip_institution, count : e.jobs.length });
-  }
-
+  // update tooltip
+  tooltip.show('person', { title : e.name, subtitle : e.ttip_institution, count : e.jobs.length });
 
   if(!shared.activePerson && !shared.activeOrganisation){
     drawLinks(e);
+  }
+}
+
+function handleMouseOut(e) {
+
+  tooltip.hide();
+
+  if(shared.activePerson || shared.activeOrganisation){
+    return false;
+  }
+
+  personNodes.style('opacity', 1);
+
+  svg.selectAll('.connection')
+    .remove();
+}
+
+
+function handleChapter(currentPerson, e){
+
+  var chapterPersons = [];
+
+  e.chapters.forEach(function(chapterName){
+    chapterPersons = chapterPersons.concat(data.chapters[chapterName]);
+  });
+
+  if(!utils.isUndefined(chapterPersons) && chapterPersons.length > 1){
+
+    var currentCenter = [e.oldX, e.oldY];
+    
+    var nodesToMove = svg.selectAll('.person')
+      .filter(function(d){
+        return d.name !== e.name && chapterPersons.indexOf(d.name) !== -1;
+      })
+      .style('opacity', 1)
+      .classed('chapter-person', true)
+      .each(function(d){
+        d.cx = d.x - currentCenter[0] > 0 ? currentCenter[0] + 10 : currentCenter[0] - 10;
+        d.cy = d.y - currentCenter[1] > 0 ? currentCenter[1] + 10 : currentCenter[1] - 10;
+      });
+
+    force.stop();
+
+    shared.chapterForce
+      .nodes([])
+      .on('tick', function(d){
+        nodesToMove
+          .each(collide(nodesToMove.data(), .3))
+          .each(gravity(1 * d.alpha))
+          .attr({
+            cx :function(d) {
+              return d.x;
+            },
+            cy : function(d) {
+              return d.y;
+            }
+          });
+      })
+      .start();
+
+    svg.selectAll('.chapter-circle-group')
+      .append('circle')
+      .classed('chapter-circle', true)
+      .attr({
+        cx : currentCenter[0] ,
+        cy : currentCenter[1] ,
+        r : 50
+      })
+      .style({
+        fill : '#f3f3f3',
+        stroke : '#ddd',
+        'stroke-dasharray' : '3, 3'
+      });
+
+
+
   }
 }
 
@@ -143,39 +219,12 @@ function drawLinks(e){
     .filter(function(p) {
       return p.data.pId === e.id;
     })
-    .style({
-      stroke: '#eee',
-      fill: function(d) {
-        return shared.color(d.data.id);
-      },
-      'stroke-width': 1
-    })
     .each(function(d){
       var link = shared.getLink(svg, d);
       links.push(link);
     });
 
   shared.drawConnections(svg, links);
-}
-
-function handleMouseOut(e) {
-
-  tooltip.hide();
-
-  if(shared.activePerson || shared.activeOrganisation){
-    return false;
-  }
-
-  d3.selectAll('.person-in-organisation')
-    .style({
-      stroke: 'none',
-      fill: 'none'
-    });
-
-  personNodes.style('opacity', 1);
-
-  svg.selectAll('.connection')
-    .remove();
 }
 
 function resize(){
@@ -207,9 +256,9 @@ function createPersonNodes(parent){
       opacity: 1,
       fill: function(d) {
         if(d.isUnknown){
-          return unknownColor;
+          return shared.personColors.unknownColor;
         }
-        return d.isEU ? euColor : usColor;
+        return d.isEU ? shared.personColors.euColor : shared.personColors.usColor;
       }
     });
 }
@@ -219,13 +268,6 @@ function appendPersonGroup(){
     .append('g')
     .classed('person-group', true)
     .attr('mask', 'url("#mask-circle")')
-}
-
-function addDataAttributes() {
-  data.persons.forEach(function(person) {
-    person.cx = x(person.isEU ? 1 : 0);
-    person.cy = shared.height * .5;
-  });
 }
 
 function addUnknownPersons(){
@@ -245,6 +287,10 @@ function tick(e) {
   svg.selectAll('.person')
     .each(gravity(.2 * e.alpha))
     //.each(collide(.02))
+    .each(function(d){
+      d.oldX = d.x;
+      d.oldY = d.y;
+    })
     .attr({
       cx :function(d) {
         return d.x;
@@ -255,12 +301,15 @@ function tick(e) {
     });
 }
 
-function collide(alpha) {
+function collide(d, alpha) {
 
-  var quadtree = d3.geom.quadtree(data.persons);
+  var quadtree = d3.geom.quadtree(d);
   var collidePadding = 15;
 
   return function(d) {
+    if(d.fixed){
+      return false;
+    }
 
     var r = d.radius + collidePadding,
       nx1 = d.x - r,
@@ -289,6 +338,10 @@ function collide(alpha) {
 
 function gravity(alpha) {
   return function(d) {
+    if(d.fixed){
+      return false;
+    }
+
     d.y += (d.cy - d.y) * (alpha);
     d.x += (d.cx - d.x) * (alpha);
   };

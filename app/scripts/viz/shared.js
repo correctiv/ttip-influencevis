@@ -17,12 +17,25 @@ var innerArc = d3.svg.arc()
 
 var activePerson = null;
 var activeOrganisation = null;
+var activeChapterPersons = [];
+
+var chapterForce = d3.layout.force()
+  .size([width, height])
+  .gravity(.1)
+  .charge(-100);
 
 dispatch.on('reset.shared', function(){
   resetActiveOrganisation();
   resetActivePerson();
+  resetActiveChapterPersons();
   infoArea.reset();
 });
+
+var personColors = {
+  euColor : '#284bdd',
+  usColor : '#db2e4c',
+  unknownColor : '#dddddd'
+}
 
 function appendCircleMask(svg) {
   svg
@@ -41,6 +54,12 @@ function appendConnectionGroup(svg){
     .classed('connection-group', true);  
 }
 
+function appendChapterCircleGroup(svg){
+   svg.append('g')
+    .classed('chapter-circle-group', true);  
+}
+
+
 function createBaseSVG() {
   return d3.select('#visualization')
     .append('svg')
@@ -56,7 +75,7 @@ function drawConnections(svg, links) {
     .enter()
     .append('path')
     .classed('connection', true)
-    .attr('stroke', '#aaa')
+    .attr('stroke', '#ccc')
     .attr('stroke-width', 1)
     .attr('fill', 'none')
     .attr('d', diagonal);
@@ -68,10 +87,10 @@ function getLink(svg, d){
     person = svg.select('#person-' + utils.slugify(d.data.pId)),
     personCentroid = [ parseFloat(person.attr('cx')), parseFloat(person.attr('cy'))]
 
-    arcCentroid[0] += width / 2;
-    arcCentroid[1] += height / 2;
+  arcCentroid[0] += width / 2;
+  arcCentroid[1] += height / 2;
 
-    return {data: d.data, target : { x :arcCentroid[0], y : arcCentroid[1] }, source : { x : personCentroid[0], y : personCentroid[1] }};
+  return {data: d.data, target : { x :arcCentroid[0], y : arcCentroid[1] }, source : { x : personCentroid[0], y : personCentroid[1] }};
 }
 
 function resetActiveOrganisation(){
@@ -91,15 +110,37 @@ function resetActivePerson(){
     .style({
       stroke: 'none'
     });
-
 }
 
+function resetActiveChapterPersons(){
+
+  chapterForce.stop();
+
+  d3.selectAll('.chapter-circle')
+    .remove();
+
+  d3.selectAll('.chapter-person')
+    .classed('chapter-person', false)
+    .transition()
+    .duration(400)
+    .attr({
+      cx : function(d){
+        d.x = d.oldX;
+        return d.oldX;
+      },
+      cy : function(d){
+        d.y = d.oldY;
+        return d.oldY;
+      }
+    });
+}
 
 // public functions
 module.exports = {
   color : d3.scale.category20c(),
   appendCircleMask : appendCircleMask,
   appendConnectionGroup : appendConnectionGroup,
+  appendChapterCircleGroup: appendChapterCircleGroup,
   createBaseSVG : createBaseSVG,
   drawConnections: drawConnections,
   resetActiveOrganisation: resetActiveOrganisation,
@@ -110,5 +151,9 @@ module.exports = {
   radius: radius,
   dispatch : dispatch,
   activePerson : activePerson,
-  activeOrganisation : activeOrganisation
+  activeOrganisation : activeOrganisation,
+  activeChapterPersons : activeChapterPersons,
+  resetActiveChapterPersons : resetActiveChapterPersons,
+  chapterForce : chapterForce,
+  personColors : personColors
 };
