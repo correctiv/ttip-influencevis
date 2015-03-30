@@ -37,6 +37,13 @@ var personColors = {
   unknownColor : '#dddddd'
 }
 
+var orgaColors = {
+  'Europäische Kommission' : '#d62728',
+  'Öffentlicher Arbeitgeber': '#c0c0c0',
+  'Privater Arbeitgeber': '#dedede',
+  'US-Handelsbehörde (USTR)': '#1f77b4'
+}
+
 function appendCircleMask(svg) {
   svg
     .append('defs')
@@ -155,5 +162,6 @@ module.exports = {
   activeChapterPersons : activeChapterPersons,
   resetActiveChapterPersons : resetActiveChapterPersons,
   chapterForce : chapterForce,
-  personColors : personColors
+  personColors : personColors,
+  orgaColors: orgaColors
 };

@@ -21,14 +21,18 @@ function init(d){
     
     person.jobs.forEach(function(job){
 
+      job.color = shared.orgaColors[job.sektor];
+
       if(job.sektor){
         person.orgaIds.push(job.sektor);
 
+        var color = person.isEU ? shared.personColors.euColor : shared.personColors.usColor;
+
         if(utils.isUndefined(orgaPersons[job.sektor])){
-          orgaPersons[job.sektor] = [{name : person.name, isEU : person.isEU , color : person.isEU ? shared.personColors.euColor : shared.personColors.usColor }]
+          orgaPersons[job.sektor] = [{name : person.name, isEU : person.isEU , color : color }]
         }else{
           if(!isPersonInList(person, job.sektor)){
-            orgaPersons[job.sektor].push({name : person.name, isEU : person.isEU, color : person.isEU ? shared.personColors.euColor : shared.personColors.usColor });
+            orgaPersons[job.sektor].push({name : person.name, isEU : person.isEU, color : color });
           }
         }
 
@@ -65,6 +69,11 @@ function init(d){
       }
 
     });
+
+    // remove empty chapters 
+    if(person.chapters.length === 1 && !person.chapters[0]){
+      person.chapters = [];
+    }
 
     person.hasJobs = person.jobs.length > 0;
     person.hasChapters = person.chapters.length > 0;
@@ -109,11 +118,9 @@ function init(d){
 
   for(var orgaId in orgaPersons){
     var list = orgaPersons[orgaId];
-
     list = list.sort(function(a, b){
       return b.isEU - a.isEU;
     });
-
   }
   
   for (var orgaId in organisationCounts) {
@@ -174,8 +181,41 @@ function isPersonInList(person, sektor){
 
 }
 
+function getPersonByName(name){
+  var personList = data.persons,
+    length = personList.length,
+    foundPerson = null;
+
+  for(var i = 0; i < length; i++){
+    var currentPerson = personList[i];
+    if(currentPerson.name === name){
+      foundPerson = currentPerson;
+      break;
+    }
+  }
+
+  return foundPerson;
+}
+
+function getOrgaById(id){
+  var orgaList = data.organisations,
+    length = orgaList.length,
+    foundOrga = null;
+
+  for(var i = 0; i < length; i++){
+    var currentOrga = orgaList[i];
+    if(currentOrga.id === id){
+      foundOrga = currentOrga;
+      break;
+    }
+  }
+
+  return foundOrga;
+}
 
 module.exports = {
   init : init,
-  getData : getData
+  getData : getData,
+  getPersonByName: getPersonByName,
+  getOrgaById: getOrgaById
 }

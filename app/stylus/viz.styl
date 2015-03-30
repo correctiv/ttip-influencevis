@@ -56,22 +56,29 @@
   .info-headline
     font-weight:bold
     margin:1em 0
-    
-  .info-person-organisations
-    padding-left:20px
-    
+  
+  .info-list
     li
       margin-bottom:5px
-  
+      cursor:pointer
+      
+      .color-box
+        display:inline-block
+        width:10px
+        height:10px
+        margin-right:5px
+
+      &:hover
+        opacity: .8      
+
+  .info-person-organisations
+    padding-left:20px
+
   .info-organisation-persons
     margin-top:20px
     list-style:none
-    
+
     .color-box
-      display:inline-block
-      width:10px
-      height:10px
-      margin-right:5px
       border-radius:20px
 
 #tooltip

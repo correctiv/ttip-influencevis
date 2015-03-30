@@ -3,6 +3,7 @@ var shared = require('./shared');
 var infoArea = require('./info');
 var dataHandler = require('./datahandler');
 var tooltip = require('./tooltip');
+var utils = require('../utils');
 
 var svg = null;
 var data = null;
@@ -10,7 +11,17 @@ var arc = d3.svg.arc()
   .outerRadius(shared.radius - 15)
   .innerRadius(shared.radius - 70);
 
-var colors = ['#d62728', '#c0c0c0','#dedede', '#1f77b4']
+// eventhandler if you click on a organisation in the person template
+d3.select('.viz-info').on('click', function(){
+  var evt = d3.event,
+    className = 'info-person-organisation';
+  if(evt.target.className ===  className|| evt.target.parentElement.className === className){
+    var sektorName = d3.select(evt.target).select('.sektor-name').node().textContent,
+      orgaData = dataHandler.getOrgaById(sektorName);
+
+    handleClick({data : orgaData});
+  }
+});
 
 var pieSort = function(a, b) {
   if(b.sortIndex < a.sortIndex){
@@ -56,10 +67,13 @@ function init(baseSvg, d) {
     .enter()
     .append('path')
     .classed('organisation', true)
-    .attr('d', arc)   
+    .attr('d', arc)
+    .attr('id', function(d){
+      return 'organisation-' + utils.slugify(d.sektor);
+    })   
     .style({
       fill: function(d) {
-        return colors[d.data.sortIndex];
+        return shared.orgaColors[d.data.id];
       },
       opacity: .8
     })
@@ -104,15 +118,16 @@ function handleClick(e){
 
   shared.activeOrganisation = e.data.id;
   shared.activePerson = null;
-  
-  d3.select(this)
+    
+  var orgaSelection = d3.select('#organisation-' + e.data.sektor);
+
+  orgaSelection
     .style({
       stroke: '#555',
       'stroke-width' : '3px'
     });
 
   infoArea.setOrganisationData(e.data);
-  handleMouseEnter(e);
 
   svg.selectAll('.connection')
     .remove();

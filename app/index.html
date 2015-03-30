@@ -32,10 +32,12 @@
         {{#hasJobs}}
         <div class="info-headline">Biographie</div>
 
-        <ul class="info-person-organisations">
+        <ul class="info-person-organisations info-list">
 
         {{#jobs}}
-          <li>
+          <li class="info-person-organisation">
+            <span style="display:none" class="sektor-name">{{sektor}}</span>
+            <span class="color-box" style="background-color: {{color}};"></span>
             <strong>{{organisation}}</strong>
             {{#position}}<br />{{position}} {{/position}}
             {{#dateLabel}}<br /><i>{{dateLabel}}</i>{{/dateLabel}}
@@ -74,9 +76,9 @@
         <div class="info-title">{{id}}</div>
         <div class="info-subtitle">Folgende Personen haben oder hatten Verbindungen zu dieser Organisation:</div>
 
-        <ul class="info-organisation-persons">
+        <ul class="info-organisation-persons info-list">
         {{#persons}}
-          <li><span class="color-box" style="background-color: {{color}};"></span>{{name}}</li>
+          <li class="info-organisation-person"><span class="color-box" style="background-color: {{color}};"></span>{{name}}</li>
         {{/persons}}
         </ul>
 

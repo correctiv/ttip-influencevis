@@ -21,6 +21,18 @@ var x = d3.scale.ordinal()
   .domain(d3.range(2))
   .rangePoints([shared.width * .45 - (shared.radius * .5), shared.width * .55 + (shared.radius * .5)], 1);
 
+// eventhandler if you click on a person in the organisation template
+d3.select(document).on('click', function(){
+  var evt = d3.event,
+    className = 'info-organisation-person';
+  if(evt.target.className ===  className|| evt.target.parentElement.className === className){
+    var personName = evt.target.textContent,
+      personData = dataHandler.getPersonByName(personName);
+
+    handleClick(personData);
+  }
+});
+
 function init(svgBase) {
 
   svg = svgBase;
@@ -42,7 +54,7 @@ function init(svgBase) {
       mouseleave: handleMouseOut,
       mousemove: handleMouseMove,
       click: handleClick
-    })
+    });
 
   // do a transition at the beginning
   personNodes
@@ -86,7 +98,9 @@ function handleClick(e){
   shared.activePerson = e.name;
   shared.activeOrganisation = null;
 
-  d3.select(this)
+  var personSelection = d3.select('#person-' + utils.slugify(e.name));
+
+  personSelection
     .style({
       stroke: '#555',
       'stroke-width' : '3px',
@@ -95,14 +109,12 @@ function handleClick(e){
 
   infoArea.setPersonData(e);
 
-  handleMouseEnter(e);
-
   svg.selectAll('.connection')
     .remove();
 
   drawLinks(e);
 
-  handleChapter(d3.select(this), e);
+  handleChapter(personSelection, e);
 }
 
 function handleMouseMove(e){
