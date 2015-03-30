@@ -14,9 +14,13 @@ var arc = d3.svg.arc()
 // eventhandler if you click on a organisation in the person template
 d3.select('.viz-info').on('click', function(){
   var evt = d3.event,
-    className = 'info-person-organisation';
-  if(evt.target.className ===  className|| evt.target.parentElement.className === className){
-    var sektorName = d3.select(evt.target).select('.sektor-name').node().textContent,
+    className = 'info-person-organisation',
+    evtTarget = evt.target,
+    evtParent = evt.target.parentElement;
+
+  if(evtTarget.className === className || (!utils.isUndefined(evtParent) && evtParent.className === className)){
+    var currentTarget = evtTarget.className === className ? evtTarget : evtParent,
+      sektorName = d3.select(currentTarget).select('.sektor-name').node().textContent,
       orgaData = dataHandler.getOrgaById(sektorName);
 
     handleClick({data : orgaData});

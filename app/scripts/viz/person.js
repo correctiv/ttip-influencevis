@@ -24,9 +24,12 @@ var x = d3.scale.ordinal()
 // eventhandler if you click on a person in the organisation template
 d3.select(document).on('click', function(){
   var evt = d3.event,
-    className = 'info-organisation-person';
-  if(evt.target.className ===  className|| evt.target.parentElement.className === className){
-    var personName = evt.target.textContent,
+    className = 'info-organisation-person',
+    evtTarget = evt.target,
+    evtParent = evt.target.parentElement;
+  if(evtTarget.className ===  className || (!utils.isUndefined(evtParent) && evtParent.className === className)){
+    var currentTarget = evtTarget.className === className ? evtTarget : evtParent,
+      personName = currentTarget.textContent,
       personData = dataHandler.getPersonByName(personName);
 
     handleClick(personData);
