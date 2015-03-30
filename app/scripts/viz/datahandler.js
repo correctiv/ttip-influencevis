@@ -14,7 +14,6 @@ function init(d){
   persons.forEach(function(person){
     // add attributes we need for the visualization
     person.isEU = person.ttip_party === 'EU';
-    person.radius = 4; 
     person.orgaIds = [];
     person.id = person.name;
 

@@ -1,7 +1,7 @@
 var d3 = require('d3');
 var Hogan = require('hogan');
 
-
+var infoWrapper = d3.select('.viz-info');
 var infoArea = d3.select('.viz-info-content');
 var closeButton = d3.select('.viz-info-close');
 
@@ -11,17 +11,17 @@ var introTemplate = null;
 
 function setPersonData(data){ 
   infoArea.html(personTemplate.render(data));
-  closeButton.style('display', 'block');
+  infoWrapper.classed('active', true);
 }
 
 function setOrganisationData(data){ 
   infoArea.html(organisationTemplate.render(data));
-  closeButton.style('display', 'block');
+  infoWrapper.classed('active', true);
 }
 
 function reset(){
   infoArea.html(introTemplate.render());
-  closeButton.style('display', 'none');
+  infoWrapper.classed('active', false);
 }
 
 function init(sharedModule){

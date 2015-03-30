@@ -6,8 +6,11 @@ var infoArea = require('./info');
 var dispatch = d3.dispatch('reset');
 
 var width = parseInt(d3.select('#visualization').style('width')),
-  height = parseInt(d3.select('#visualization').style('height')),
+  height = width, //parseInt(d3.select('#visualization').style('height')),
   radius = Math.min(width, height) / 2;
+
+
+d3.select('.viz').style('height', height + 'px')
 
 var diagonal = d3.svg.diagonal();
 

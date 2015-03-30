@@ -11,10 +11,12 @@ var personNodes = null;
 
 var unknownPersonCount = 120;
 
+var charge = -120;
+var personRaduis = 4;
+
 var force = d3.layout.force()
   .size([shared.width, shared.height])
   .gravity(0.3)
-  .charge(-100)
   .on('tick', tick);
 
 var x = d3.scale.ordinal()
@@ -27,6 +29,7 @@ d3.select(document).on('click', function(){
     className = 'info-organisation-person',
     evtTarget = evt.target,
     evtParent = evt.target.parentElement;
+
   if(evtTarget.className ===  className || (!utils.isUndefined(evtParent) && evtParent.className === className)){
     var currentTarget = evtTarget.className === className ? evtTarget : evtParent,
       personName = currentTarget.textContent,
@@ -40,6 +43,21 @@ function init(svgBase) {
 
   svg = svgBase;
   data = dataHandler.getData();
+
+  var svgWidth = parseInt(svg.attr('width'))
+
+  if(svgWidth < 400){
+    charge = -25;
+    personRaduis = 2;
+  }else if(svgWidth < 600){
+    charge = -50;
+    personRaduis = 3;
+  }else if(svgWidth < 700){
+    charge = -100;
+    personRaduis = 4;
+  }
+
+  force.charge(charge)
 
   // add data we need for the visualization
   data.persons.forEach(function(person) {
@@ -65,7 +83,7 @@ function init(svgBase) {
     .duration(750)
     .delay(function(d, i) { return i * 7; })
     .attrTween('r', function(d) {
-      var i = d3.interpolate(0, d.radius);
+      var i = d3.interpolate(0, personRaduis);
       return function(t) { return d.radius = i(t); };
     });  
 

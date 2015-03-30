@@ -1,12 +1,12 @@
 .viz 
   width:98%
   max-width:1000px
-  height: 600px
   margin: 0 auto
   position: relative
     
   .viz-core
   .viz-info
+    background:white
     float:left
     height:100%
     user-select:none
@@ -34,6 +34,11 @@
   padding:1em 0
   position:relative
   
+
+  &.active
+    .viz-info-close
+      display:block
+
   .viz-info-close
     position:absolute
     right:1em
@@ -48,6 +53,7 @@
   .viz-info-content
     height:100%
     overflow-y: auto
+    padding:10px
   
   .info-title
     font-weight: bold
@@ -95,3 +101,19 @@
   
   .tooltip-person-text
     margin-bottom:5px
+    
+
+@media only screen and (max-width: 700px)
+  .viz
+    .viz-core
+      width:100%
+    .viz-info
+      position:absolute
+      right:0
+      top:0
+      display:none
+      width:250px
+      border-left:1px solid #eee
+      
+      &.active
+        display:block
