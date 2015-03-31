@@ -3,7 +3,7 @@ var data = {};
 var organisationCounts = {};
 var chapters = {};
 
-var orgaSorting = ['US-Handelsbehörde (USTR)','Privater Arbeitgeber', 'Öffentlicher Arbeitgeber','Europäische Kommission'];
+var orgaSorting = ['US-Handelsbehörde (USTR)', 'Öffentlicher Arbeitgeber (US)', 'Privater Arbeitgeber', 'Öffentlicher Arbeitgeber (EU)','Europäische Kommission'];
 var orgaPersons = {};
 
 function init(d){
@@ -21,8 +21,18 @@ function init(d){
     person.jobs.forEach(function(job){
 
       job.color = shared.orgaColors[job.sektor];
+      job.isSubSektor = false;
 
       if(job.sektor){
+
+        if(job.sektor === 'Öffentlicher Arbeitgeber'){
+          job.sektor = person.isEU ? job.sektor + ' (EU)' : job.sektor + ' (US)';
+        }
+
+        if(job.sektor === 'Europäische Kommission'){
+          job.isSubSektor = true;
+        }
+
         person.orgaIds.push(job.sektor);
 
         var color = person.isEU ? shared.personColors.euColor : shared.personColors.usColor;
@@ -95,7 +105,7 @@ function init(d){
 
   persons.forEach(function(person){
     person.jobs.forEach(function(job){
-      var count = organisationCounts[job.organisation],
+      var count = organisationCounts[job.sektor],
         sortIndex = orgaSorting.indexOf(job.sektor);
 
       if(sortIndex !== -1){
@@ -104,7 +114,8 @@ function init(d){
           orgaName: job.organisation,
           pId: person.name,
           count: count,
-          sortIndex : sortIndex
+          sortIndex : sortIndex,
+          isSubSektor: job.isSubSektor
         });
       }
     });

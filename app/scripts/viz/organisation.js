@@ -28,6 +28,11 @@ d3.select('.viz-info').on('click', function(){
 });
 
 var pieSort = function(a, b) {
+
+  if(a.isSubSektor){
+    return a.count -b.count;
+  }
+
   if(b.sortIndex < a.sortIndex){
     return -1;
   }else if(b.sortIndex > a.sortIndex){

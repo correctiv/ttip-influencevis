@@ -41,10 +41,11 @@ var personColors = {
 }
 
 var orgaColors = {
-  'Europäische Kommission' : '#d62728',
-  'Öffentlicher Arbeitgeber': '#c0c0c0',
-  'Privater Arbeitgeber': '#dedede',
-  'US-Handelsbehörde (USTR)': '#1f77b4'
+  'Europäische Kommission' : '#325a7c',
+  'Öffentlicher Arbeitgeber (EU)': '#3e74a0',
+  'Öffentlicher Arbeitgeber (US)': '#e9473e',
+  'Privater Arbeitgeber': '#808080',
+  'US-Handelsbehörde (USTR)': '#db2e4c'
 }
 
 function appendCircleMask(svg) {
