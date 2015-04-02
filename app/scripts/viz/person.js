@@ -11,8 +11,10 @@ var personNodes = null;
 
 var unknownPersonCount = 120;
 
+var svgWidth = 0;
 var charge = -120;
 var personRaduis = 4;
+var chapterTitleOffset = 20;
 
 var force = d3.layout.force()
   .size([shared.width, shared.height])
@@ -44,17 +46,20 @@ function init(svgBase) {
   svg = svgBase;
   data = dataHandler.getData();
 
-  var svgWidth = parseInt(svg.attr('width'))
+  svgWidth = parseInt(svg.attr('width'))
 
   if(svgWidth < 400){
     charge = -25;
     personRaduis = 2;
+    chapterTitleOffset = 10;
   }else if(svgWidth < 600){
     charge = -50;
     personRaduis = 3;
+    chapterTitleOffset = 15;
   }else if(svgWidth < 700){
     charge = -100;
     personRaduis = 4;
+    chapterTitleOffset = 15;
   }
 
   force.charge(charge)
@@ -229,7 +234,17 @@ function handleChapter(currentPerson, e){
         'stroke-dasharray' : '3, 3'
       });
 
+    var isPointRight = currentCenter[0] > (svgWidth/2),
+      chapterTitleLeft = isPointRight ? currentCenter[0] - (200 + chapterTitleOffset) : currentCenter[0] + chapterTitleOffset;
 
+    d3.selectAll('.chapter-title')
+      .style({
+        left : chapterTitleLeft + 'px',
+        top : (currentCenter[1] + chapterTitleOffset) + 'px',
+        display : 'block',
+        'text-align': isPointRight ? 'right' : 'left'
+      })
+      .html(e.chapters.toString());
 
   }
 }

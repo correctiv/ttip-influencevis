@@ -67,7 +67,7 @@ function appendConnectionGroup(svg){
 
 function appendChapterCircleGroup(svg){
    svg.append('g')
-    .classed('chapter-circle-group', true);  
+    .classed('chapter-circle-group', true);
 }
 
 
@@ -129,6 +129,9 @@ function resetActiveChapterPersons(){
 
   d3.selectAll('.chapter-circle')
     .remove();
+
+  d3.selectAll('.chapter-title')
+    .style('display', 'none');
 
   d3.selectAll('.chapter-person')
     .classed('chapter-person', false)

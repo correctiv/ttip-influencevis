@@ -12,7 +12,12 @@
   </head>
   <body>
     <div class="viz clearfix">
-      <div id="visualization" class="viz-core"></div>
+      <div id="visualization" class="viz-core">
+        <div class="chapter-title">
+          
+        </div>
+
+      </div>
       <div class="viz-info">
         <div class="viz-info-close">&times;</div>
         <div class="viz-info-content"></div>
@@ -27,7 +32,8 @@
 
         <div class="info-headline">Person</div>
         <div class="info-title">{{name}}</div>
-        <div class="info-subtitle">TTIP Institution: {{ttip_institution}}</div>
+        {{#chapters}}<div class="info-subtitle">Verhandler: {{chapters}}</div>{{/chapters}}
+        <div class="info-subtitle"><strong>{{ttip_institution}}</strong></div>
 
         {{#hasJobs}}
         <div class="info-headline">Biographie</div>
@@ -36,7 +42,7 @@
 
         {{#jobs}}
           <li class="info-person-organisation">
-            <span style="display:none" class="sektor-name">{{sektor}}</span>
+            <span style="display:none" class="sektor-name">{{sektorType}}</span>
             <span class="color-box" style="background-color: {{color}};"></span>
             <strong>{{organisation}}</strong>
             {{#position}}<br />{{position}} {{/position}}
@@ -46,19 +52,6 @@
         </ul>
 
         {{/hasJobs}}
-
-        {{#hasChapters}}
-
-        <div class="info-headline">Kapitel</div> 
-
-        <ul class="info-person-organisations">
-
-        {{#chapters}}
-          <li>{{.}}</li>
-        {{/chapters}}
-        </ul> 
-
-        {{/hasChapters}}
 
         
       </div>

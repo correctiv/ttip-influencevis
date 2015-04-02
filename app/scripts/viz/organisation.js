@@ -29,13 +29,22 @@ d3.select('.viz-info').on('click', function(){
 
 var pieSort = function(a, b) {
 
-  if(a.isSubSektor){
-    return a.count -b.count;
-  }
 
   if(b.sortIndex < a.sortIndex){
     return -1;
   }else if(b.sortIndex > a.sortIndex){
+    return 1;
+  }
+
+  if(b.count < a.count){
+    return -1;
+  }else if(b.count > a.count){
+    return 1;
+  }
+
+  if(b.id < a.id){
+    return -1;
+  }else if(b.id > a.id){
     return 1;
   }else{
     return 0;
@@ -78,11 +87,11 @@ function init(baseSvg, d) {
     .classed('organisation', true)
     .attr('d', arc)
     .attr('id', function(d){
-      return 'organisation-' + utils.slugify(d.sektor);
+      return 'organisation-' + utils.slugify(d.sektorType);
     })   
     .style({
       fill: function(d) {
-        return shared.orgaColors[d.data.id];
+        return shared.orgaColors[d.data.sektor];
       },
       opacity: .8
     })
@@ -128,7 +137,7 @@ function handleClick(e){
   shared.activeOrganisation = e.data.id;
   shared.activePerson = null;
     
-  var orgaSelection = d3.select('#organisation-' + e.data.sektor);
+  var orgaSelection = d3.select('#organisation-' + e.data.sektorType);
 
   orgaSelection
     .style({

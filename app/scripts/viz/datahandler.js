@@ -1,9 +1,10 @@
+var _ = require('lodash');
 var utils = require('../utils');
 var data = {};
-var organisationCounts = {};
+var sektorTypes = {};
 var chapters = {};
 
-var orgaSorting = ['US-Handelsbehörde (USTR)', 'Öffentlicher Arbeitgeber (US)', 'Privater Arbeitgeber', 'Öffentlicher Arbeitgeber (EU)','Europäische Kommission'];
+var orgaSorting = ['US-Handelsbehörde (USTR)', 'Öffentlicher Arbeitgeber (US)', 'Privater Arbeitgeber', 'Öffentlicher Arbeitgeber (EU)', 'Europäische Kommission'];
 var orgaPersons = {};
 
 function init(d){
@@ -16,42 +17,52 @@ function init(d){
     person.isEU = person.ttip_party === 'EU';
     person.orgaIds = [];
     person.id = person.name;
-
+    
     
     person.jobs.forEach(function(job){
 
-      job.color = shared.orgaColors[job.sektor];
-      job.isSubSektor = false;
+      job.sektorType = '';
 
       if(job.sektor){
 
         if(job.sektor === 'Öffentlicher Arbeitgeber'){
           job.sektor = person.isEU ? job.sektor + ' (EU)' : job.sektor + ' (US)';
+          job.sektorType = job.organisation;
+        }else if(job.sektor === 'Europäische Kommission'){
+          
+          if(job.organisation.indexOf('Generaldirektion') !== -1){
+            job.sektorType = job.organisation;
+          }else{
+            job.sektorType = 'Europäische Kommission Sonstige';
+          }
+        }else{
+          job.sektorType = job.sektor;
         }
 
-        if(job.sektor === 'Europäische Kommission'){
-          job.isSubSektor = true;
-        }
-
-        person.orgaIds.push(job.sektor);
+        person.orgaIds.push(job.sektorType);
 
         var color = person.isEU ? shared.personColors.euColor : shared.personColors.usColor;
 
-        if(utils.isUndefined(orgaPersons[job.sektor])){
-          orgaPersons[job.sektor] = [{name : person.name, isEU : person.isEU , color : color }]
+        if(utils.isUndefined(orgaPersons[job.sektorType])){
+          orgaPersons[job.sektorType] = [{name : person.name, isEU : person.isEU , color : color }]
         }else{
-          if(!isPersonInList(person, job.sektor)){
-            orgaPersons[job.sektor].push({name : person.name, isEU : person.isEU, color : color });
+          if(!isPersonInList(person, job.sektorType)){
+            orgaPersons[job.sektorType].push({name : person.name, isEU : person.isEU, color : color });
           }
         }
 
       }
 
+      job.color = shared.orgaColors[job.sektor];
+
       // count organisations
-      if(utils.isUndefined(organisationCounts[job.sektor]) && job.sektor){
-        organisationCounts[job.sektor] = 1;
+      if(utils.isUndefined(sektorTypes[job.sektorType]) && job.sektorType){
+        sektorTypes[job.sektorType] = {
+          count : 1,
+          sektor : job.sektor
+        };
       }else{
-        organisationCounts[job.sektor]++;
+        sektorTypes[job.sektorType].count += 1;
       }
 
       // add proper dateLabel we use to display in the list
@@ -83,7 +94,7 @@ function init(d){
     if(person.chapters.length === 1 && !person.chapters[0]){
       person.chapters = [];
     }
-
+    
     person.hasJobs = person.jobs.length > 0;
     person.hasChapters = person.chapters.length > 0;
 
@@ -99,18 +110,18 @@ function init(d){
 
   });
 
-  // handle person in organisation data (small parts of the organisation)
+  // handle person in organisation data (we need this for drawing the connections)
   
   var personsInOrganisations = [];
 
   persons.forEach(function(person){
     person.jobs.forEach(function(job){
-      var count = organisationCounts[job.sektor],
+      var count = sektorTypes[job.sektorType].count,
         sortIndex = orgaSorting.indexOf(job.sektor);
 
       if(sortIndex !== -1){
         personsInOrganisations.push({
-          id: job.sektor, 
+          id: job.sektorType, 
           orgaName: job.organisation,
           pId: person.name,
           count: count,
@@ -122,7 +133,6 @@ function init(d){
 
   });
 
-
   // handle organisation data
   var organisations = [];
 
@@ -133,16 +143,19 @@ function init(d){
     });
   }
   
-  for (var orgaId in organisationCounts) {
-    var count = organisationCounts[orgaId],
-      sortIndex = orgaSorting.indexOf(orgaId);
+  for (var sektorType in sektorTypes) {
+
+    var sektorData = sektorTypes[sektorType],
+      count = sektorData.count,
+      sortIndex = orgaSorting.indexOf(sektorData.sektor);
 
     if(sortIndex !== -1){
       organisations.push({
-        id: orgaId,
+        id: sektorType,
+        sektor : sektorData.sektor,
         count: count,
         sortIndex : sortIndex,
-        persons : orgaPersons[orgaId]
+        persons : orgaPersons[sektorType]
       });     
     }
   }
@@ -174,7 +187,6 @@ function getPersonsAsArray(persons){
 }
 
 function isPersonInList(person, sektor){
-
   var isInList = false,
     list = orgaPersons[sektor],
     listLength = list.length;
@@ -186,7 +198,6 @@ function isPersonInList(person, sektor){
       break;
     }
   }
-
   return isInList;
 
 }
