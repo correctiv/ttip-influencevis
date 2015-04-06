@@ -1,4 +1,5 @@
 var d3 = require('d3');
+var bean = require('bean');
 var shared = require('./shared');
 var infoArea = require('./info');
 var dataHandler = require('./datahandler');
@@ -28,7 +29,6 @@ d3.select('.viz-info').on('click', function(){
 });
 
 var pieSort = function(a, b) {
-
 
   if(b.sortIndex < a.sortIndex){
     return -1;
@@ -72,7 +72,7 @@ var line = d3.svg.line()
   })
   .interpolate('basis');
 
-function init(baseSvg, d) {
+function init(baseSvg) {
 
   svg = baseSvg;
   data = dataHandler.getData();
@@ -85,9 +85,11 @@ function init(baseSvg, d) {
     .enter()
     .append('path')
     .classed('organisation', true)
-    .attr('d', arc)
-    .attr('id', function(d){
-      return 'organisation-' + utils.slugify(d.sektorType);
+    .attr({
+      d : arc,
+      id : function(d){
+        return 'organisation-' + utils.slugify(d.sektorType);
+      }
     })   
     .style({
       fill: function(d) {
@@ -111,11 +113,11 @@ function init(baseSvg, d) {
     .attr('d', arc)
     .style('fill', 'none');
 
-
-  shared.dispatch.on('reset.organisation', function(){
-    shared.activeOrganisation = null;
-    handleMouseOut();
+  bean.on(document, 'activate:organisation', function(evt){
+    var orgaData = dataHandler.getOrgaById(evt.organisation);
+    handleClick({data : orgaData});
   });
+
 }
 
 function handleClick(e){
@@ -128,9 +130,7 @@ function handleClick(e){
   // organisation is already active. 
   if(shared.activeOrganisation && shared.activeOrganisation === e.data.id){
     shared.activeOrganisation = null;
-    
     infoArea.reset();
-
     return false;
   }
 
@@ -154,17 +154,13 @@ function handleClick(e){
 }
 
 function handleMouseMove(e){
-  if(!shared.activeOrganisation || shared.activeOrganisation === e.data.id){
-    var point = d3.mouse(this);
-    tooltip.setPosition({x: point[0] + shared.width / 2 , y: point[1] + shared.height / 2  });
-  }
+  var point = d3.mouse(this);
+  tooltip.setPosition({x: point[0] + shared.width / 2 , y: point[1] + shared.height / 2  });
 }
 
 function handleMouseEnter(e) {
 
-  if(!shared.activeOrganisation || shared.activeOrganisation === e.data.id){
-    tooltip.show('organisation', { title : e.data.id, count : e.data.count});
-  }
+  tooltip.show('organisation', { title : e.data.id, count : e.data.count});
 
   if(!shared.activeOrganisation && !shared.activePerson){
     drawLinks(e);

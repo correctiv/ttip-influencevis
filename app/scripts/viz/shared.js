@@ -1,9 +1,9 @@
 // here we store some shared functions that persons and organisations need
 
 var d3 = require('d3');
+var bean = require('bean');
 var utils = require('../utils');
 var infoArea = require('./info');
-var dispatch = d3.dispatch('reset');
 
 var width = parseInt(d3.select('#visualization').style('width')),
   height = width, //parseInt(d3.select('#visualization').style('height')),
@@ -27,11 +27,14 @@ var chapterForce = d3.layout.force()
   .gravity(.1)
   .charge(-100);
 
-dispatch.on('reset.shared', function(){
+bean.on(document, 'reset', function(){
   resetActiveOrganisation();
   resetActivePerson();
   resetActiveChapterPersons();
   infoArea.reset();
+
+  d3.selectAll('.person').style('opacity', 1);
+  d3.selectAll('.connection').remove();
 });
 
 var personColors = {
@@ -70,7 +73,6 @@ function appendChapterCircleGroup(svg){
     .classed('chapter-circle-group', true);
 }
 
-
 function createBaseSVG() {
   return d3.select('#visualization')
     .append('svg')
@@ -80,7 +82,7 @@ function createBaseSVG() {
 
 function drawConnections(svg, links) {
 
-  d3.select('.connection-group')
+  d3.select('.person-group')
     .selectAll('.connection')
     .data(links)
     .enter()
@@ -90,6 +92,8 @@ function drawConnections(svg, links) {
     .attr('stroke-width', 1)
     .attr('fill', 'none')
     .attr('d', diagonal);
+
+  d3.selectAll('.person').moveToFront();
 }
 
 function getLink(svg, d){
@@ -163,7 +167,6 @@ module.exports = {
   width: width,
   height: height,
   radius: radius,
-  dispatch : dispatch,
   activePerson : activePerson,
   activeOrganisation : activeOrganisation,
   activeChapterPersons : activeChapterPersons,

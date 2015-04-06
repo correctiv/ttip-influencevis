@@ -1,4 +1,5 @@
 var utils = require('../utils');
+var shared = require('./shared');
 var data = {};
 var sektorTypes = {};
 var chapters = {};

@@ -1,4 +1,5 @@
 var d3 = require('d3');
+var bean = require('bean');
 var utils = require('../utils');
 var shared = require('./shared');
 var infoArea = require('./info');
@@ -41,7 +42,7 @@ d3.select(document).on('click', function(){
   }
 });
 
-function init(svgBase) {
+function init(svgBase, activePerson, activeOrganisation) {
 
   svg = svgBase;
   data = dataHandler.getData();
@@ -63,6 +64,16 @@ function init(svgBase) {
   }
 
   force.charge(charge)
+    .on('end', function(){
+      if(activePerson){
+        var personData = dataHandler.getPersonByName(activePerson);
+        if(personData){
+          handleClick(personData);
+        }
+      }else if(activeOrganisation){
+        bean.fire(document, 'activate:organisation', { organisation : activeOrganisation });
+      }
+    });
 
   // add data we need for the visualization
   data.persons.forEach(function(person) {
@@ -94,12 +105,6 @@ function init(svgBase) {
 
   // handle force
   force.nodes(data.persons).start();  
-
-  shared.dispatch.on('reset.person', function(){
-    shared.activePerson = null;
-    handleMouseOut();
-  });
-
 }
 
 function handleClick(e){
@@ -224,7 +229,7 @@ function handleChapter(currentPerson, e){
       })
       .start();
 
-    svg.selectAll('.chapter-circle-group')
+    svg.select('.person-group')
       .append('circle')
       .classed('chapter-circle', true)
       .attr({
@@ -249,6 +254,11 @@ function handleChapter(currentPerson, e){
         'text-align': isPointRight ? 'right' : 'left'
       })
       .html(e.chapters.toString());
+
+      
+    svg.selectAll('.connection').moveToFront();
+    nodesToMove.moveToFront();
+    currentPerson.moveToFront();
 
   }
 }
@@ -298,11 +308,11 @@ function createPersonNodes(parent){
     .classed('person-unknown', function(d){
       return d.isUnknown;
     })
-    .attr('id', function(d){
-      return 'person-' + utils.slugify(d.name);
-    })
-    .attr('r', function(d){
-      return 0;
+    .attr({
+      id : function(d){
+        return 'person-' + utils.slugify(d.name);
+      },
+      r : 0
     })
     .style({
       opacity: 1,
@@ -398,5 +408,7 @@ function gravity(alpha) {
     d.x += (d.cx - d.x) * (alpha);
   };
 }
+
+
 
 module.exports.init = init;

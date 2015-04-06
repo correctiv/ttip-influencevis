@@ -1,4 +1,5 @@
 var d3 = require('d3');
+var bean = require('bean');
 var Hogan = require('hogan');
 
 var infoWrapper = d3.select('.viz-info');
@@ -24,15 +25,16 @@ function reset(){
   infoWrapper.classed('active', false);
 }
 
-function init(sharedModule){
-
-  shared = sharedModule; // we can't require shared in this module because of circle dependencies
+function init(){
 
   personTemplate = Hogan.compile(d3.select('#template-info-person').html());
   organisationTemplate = Hogan.compile(d3.select('#template-info-organisation').html());
   introTemplate = Hogan.compile(d3.select('#template-info-intro').html());
   
-  closeButton.on('click', shared.dispatch.reset);
+  bean.on(closeButton.node(), 'click', function(){
+    bean.fire(document, 'reset');
+  });
+
   reset();
 }
 
