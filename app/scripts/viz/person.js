@@ -1,5 +1,5 @@
 var d3 = require('d3');
-var bean = require('bean');
+var $ = require('jquery');
 var utils = require('../utils');
 var shared = require('./shared');
 var infoArea = require('./info');
@@ -25,22 +25,6 @@ var force = d3.layout.force()
 var x = d3.scale.ordinal()
   .domain(d3.range(2))
   .rangePoints([shared.width * .45 - (shared.radius * .5), shared.width * .55 + (shared.radius * .5)], 1);
-
-// eventhandler if you click on a person in the organisation template
-d3.select(document).on('click', function(){
-  var evt = d3.event,
-    className = 'info-organisation-person',
-    evtTarget = evt.target,
-    evtParent = evt.target.parentElement;
-
-  if(evtTarget.className ===  className || (!utils.isUndefined(evtParent) && evtParent.className === className)){
-    var currentTarget = evtTarget.className === className ? evtTarget : evtParent,
-      personName = currentTarget.textContent,
-      personData = dataHandler.getPersonByName(personName);
-
-    handleClick(personData);
-  }
-});
 
 function init(svgBase, activePerson, activeOrganisation) {
 
@@ -71,7 +55,7 @@ function init(svgBase, activePerson, activeOrganisation) {
           handleClick(personData);
         }
       }else if(activeOrganisation){
-        bean.fire(document, 'activate:organisation', { organisation : activeOrganisation });
+        $(document).trigger('activate:organisation', { organisation : activeOrganisation });
       }
     });
 
@@ -105,6 +89,9 @@ function init(svgBase, activePerson, activeOrganisation) {
 
   // handle force
   force.nodes(data.persons).start();  
+
+  bindEvents();
+
 }
 
 function handleClick(e){
@@ -294,6 +281,22 @@ function resize(){
   x.rangePoints([shared.width * .45 - (shared.radius * .5), shared.width * .55 + (shared.radius * .5)], 1);
 
   force.start();
+}
+
+function bindEvents(){
+
+  $(document).on('activate:person', function(evt){
+    var personData = dataHandler.getPersonByName(evt.person);
+    handleClick(personData);
+  });
+
+  // eventhandler if you click on a person in the organisation template
+  $(document).on('click', '.info-organisation-person', function(){
+      var personName = $(this).text(),
+        personData = dataHandler.getPersonByName(personName);
+
+    handleClick(personData);
+  });
 }
 
 function createPersonNodes(parent){

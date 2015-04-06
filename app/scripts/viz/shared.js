@@ -1,7 +1,7 @@
 // here we store some shared functions that persons and organisations need
 
 var d3 = require('d3');
-var bean = require('bean');
+var $ = require('jquery');
 var utils = require('../utils');
 var infoArea = require('./info');
 
@@ -27,7 +27,7 @@ var chapterForce = d3.layout.force()
   .gravity(.1)
   .charge(-100);
 
-bean.on(document, 'reset', function(){
+$(document).on('reset', function(){
   resetActiveOrganisation();
   resetActivePerson();
   resetActiveChapterPersons();

@@ -171,7 +171,13 @@ function init(d){
 }
 
 function getData(){
-  return data;
+  // we slice the arrays to clone them
+  return {
+    persons : data.persons.slice(0),
+    personsInOrganisations : data.personsInOrganisations.slice(0),
+    organisations : data.organisations.slice(0),
+    chapters: data.chapters
+  };
 }
 
 function getPersonsAsArray(persons){

@@ -5,7 +5,7 @@ var tooltip = require('./tooltip');
 var dataHandler = require('./datahandler');
 var organisation = require('./organisation');
 var person = require('./person');
-var shared = require('./shared');
+var selects = require('./selects');
 
 d3.selection.prototype.moveToFront = function() {
   return this.each(function(){
@@ -32,6 +32,7 @@ function init(){
     dataHandler.init(data);
     organisation.init(svg, data);
     person.init(svg, activePerson, activeOrganisation);
+    selects.init();
   });
 }
 

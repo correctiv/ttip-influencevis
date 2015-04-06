@@ -1,5 +1,5 @@
 var d3 = require('d3');
-var bean = require('bean');
+var $ = require('jquery');
 var shared = require('./shared');
 var infoArea = require('./info');
 var dataHandler = require('./datahandler');
@@ -11,22 +11,6 @@ var data = null;
 var arc = d3.svg.arc()
   .outerRadius(shared.radius - 15)
   .innerRadius(shared.radius - 70);
-
-// eventhandler if you click on a organisation in the person template
-d3.select('.viz-info').on('click', function(){
-  var evt = d3.event,
-    className = 'info-person-organisation',
-    evtTarget = evt.target,
-    evtParent = evt.target.parentElement;
-
-  if(evtTarget.className === className || (!utils.isUndefined(evtParent) && evtParent.className === className)){
-    var currentTarget = evtTarget.className === className ? evtTarget : evtParent,
-      sektorName = d3.select(currentTarget).select('.sektor-name').node().textContent,
-      orgaData = dataHandler.getOrgaById(sektorName);
-
-    handleClick({data : orgaData});
-  }
-});
 
 var pieSort = function(a, b) {
 
@@ -113,11 +97,7 @@ function init(baseSvg) {
     .attr('d', arc)
     .style('fill', 'none');
 
-  bean.on(document, 'activate:organisation', function(evt){
-    var orgaData = dataHandler.getOrgaById(evt.organisation);
-    handleClick({data : orgaData});
-  });
-
+  bindEvents();
 }
 
 function handleClick(e){
@@ -209,5 +189,18 @@ function handleMouseOut(e) {
   svg.selectAll('.connection').remove();
 }
 
+function bindEvents(){
+  // eventhandler if you click on a organisation in the person template
+  $(document).on('click', '.info-person-organisation', function(){
+    var sektorName = $(this).find('.sektor-name').text(),
+        orgaData = dataHandler.getOrgaById(sektorName);
+    handleClick({data : orgaData});
+  });
+
+  $(document).on('activate:organisation', function(evt){
+    var orgaData = dataHandler.getOrgaById(evt.organisation);
+    handleClick({data : orgaData});
+  });
+}
 
 module.exports.init = init;

@@ -1,5 +1,5 @@
 var d3 = require('d3');
-var bean = require('bean');
+var $ = require('jquery');
 var Hogan = require('hogan');
 
 var infoWrapper = d3.select('.viz-info');
@@ -31,8 +31,8 @@ function init(){
   organisationTemplate = Hogan.compile(d3.select('#template-info-organisation').html());
   introTemplate = Hogan.compile(d3.select('#template-info-intro').html());
   
-  bean.on(closeButton.node(), 'click', function(){
-    bean.fire(document, 'reset');
+  $(document).on('click', '.viz-info-close' , function(){
+    $(document).trigger({type : 'reset'});
   });
 
   reset();
