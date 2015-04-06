@@ -131,6 +131,10 @@ function handleClick(e){
       stroke: '#555',
       'stroke-width' : '3px',
       opacity : 1
+    })
+    .attr({
+      cx : e.oldX,
+      cy : e.oldY
     });
 
   infoArea.setPersonData(e);
