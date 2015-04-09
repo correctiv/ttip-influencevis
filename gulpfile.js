@@ -1,6 +1,8 @@
 var gulp = require('gulp');
 var $ = require('gulp-load-plugins')();
 var del = require('del');
+var ghPages = require('gulp-gh-pages');
+
 // set variable via $ gulp --type production
 var environment = $.util.env.type || 'development';
 var isProduction = environment === 'production';
@@ -9,7 +11,7 @@ var webpackConfig = require('./webpack.config.js')[environment];
 var port = $.util.env.port || 1337;
 var app = 'app/';
 var dist = 'dist/';
-var autoprefixerBrowsers = [                 
+var autoprefixerBrowsers = [
   'ie >= 9',
   'ie_mob >= 10',
   'ff >= 25',
@@ -89,6 +91,12 @@ gulp.task('watch', function() {
 // remove bundels
 gulp.task('clean', function(cb) {
   del([dist], cb);
+});
+
+// deploy to github pages
+gulp.task('deploy', function() {
+  return gulp.src('./dist/**/*')
+    .pipe(ghPages());
 });
 
 // by default build project and then watch files in order to trigger livereload
