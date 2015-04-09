@@ -9,8 +9,8 @@ var utils = require('../utils');
 var svg = null;
 var data = null;
 var arc = d3.svg.arc()
-  .outerRadius(shared.radius - 15)
-  .innerRadius(shared.radius - 70);
+  .outerRadius(shared.dim.radius - 15)
+  .innerRadius(shared.dim.radius - 70);
 
 var pieSort = function(a, b) {
 
@@ -62,7 +62,7 @@ function init(baseSvg) {
   data = dataHandler.getData();
 
   arcs = svg.append('g')
-    .attr('transform', 'translate(' + shared.width / 2 + ',' + shared.height / 2 + ')');
+    .attr('transform', 'translate(' + shared.dim.width / 2 + ',' + shared.dim.height / 2 + ')');
 
   arcs.selectAll('.organisation')
     .data(pieOrga(data.organisations))
@@ -74,7 +74,7 @@ function init(baseSvg) {
       id : function(d){
         return 'organisation-' + utils.slugify(d.sektorType);
       }
-    })   
+    })
     .style({
       fill: function(d) {
         return shared.orgaColors[d.data.sektor];
@@ -106,8 +106,8 @@ function handleClick(e){
   shared.resetActiveOrganisation();
   shared.resetActivePerson();
   shared.resetActiveChapterPersons();
-  
-  // organisation is already active. 
+
+  // organisation is already active.
   if(shared.activeOrganisation && shared.activeOrganisation === e.data.id){
     shared.activeOrganisation = null;
     infoArea.reset();
@@ -116,7 +116,7 @@ function handleClick(e){
 
   shared.activeOrganisation = e.data.id;
   shared.activePerson = null;
-    
+
   var orgaSelection = d3.select('#organisation-' + e.data.sektorType);
 
   orgaSelection
@@ -135,7 +135,7 @@ function handleClick(e){
 
 function handleMouseMove(e){
   var point = d3.mouse(this);
-  tooltip.setPosition({x: point[0] + shared.width / 2 , y: point[1] + shared.height / 2  });
+  tooltip.setPosition({x: point[0] + shared.dim.width / 2 , y: point[1] + shared.dim.height / 2  });
 }
 
 function handleMouseEnter(e) {
@@ -174,7 +174,7 @@ function drawLinks(e){
       return p.orgaIds.indexOf(activeOrgaId) === -1;
     })
     .style('opacity', .25);
-    
+
 }
 
 function handleMouseOut(e) {

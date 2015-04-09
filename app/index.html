@@ -5,14 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="A description.">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-   
+
     <title>TTIP Visualization</title>
 
     <link rel="stylesheet" href="css/main.css">
   </head>
   <body>
-    <div class="viz clearfix">
-      
+
+    <div class="viz clearfix" id="my-id">
+
       <div class="select-boxes">
           <div class="select-wrapper">
             <select id="select-person"></select>
@@ -23,18 +24,18 @@
             </select>
           </div>
       </div>
-      
-      <div id="visualization" class="viz-core">
+
+      <div class="viz-core">
         <div class="chapter-title"></div>
 
       </div>
       <div class="viz-info">
         <div class="viz-info-close">&times;</div>
         <div class="viz-info-content"></div>
-      </div>  
+      </div>
     </div>
-    
-    
+
+
     <!-- we use this template to display the person tooltip -->
     <script id="template-info-person" type="template/text">
 
@@ -63,11 +64,11 @@
 
         {{/hasJobs}}
 
-        
+
       </div>
 
     </script>
-  
+
 
     <!-- we use this template to display the organisation tooltip -->
     <script id="template-info-organisation" type="template/text">
@@ -89,40 +90,40 @@
       </div>
 
     </script>
-    
+
 
 
     <!-- we use this template to display the standard tooltip content -->
     <script id="template-info-intro" type="template/text">
 
       <div class="info-intro">
-        
+
         <div class="info-headline">Info</div>
         <div class="info-subtitle">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi reprehenderit aliquam blanditiis autem iusto atque aperiam, eligendi mollitia sint in sunt ullam consequatur est obcaecati quisquam minus accusamus eaque, labore.<br />Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi reprehenderit aliquam blanditiis autem iusto atque aperiam, eligendi mollitia sint in sunt ullam consequatur est obcaecati quisquam minus accusamus eaque, labore.</div>
-      
+
       </div>
 
     </script>
-  
+
 
     <script id="template-tooltip-person" type="template/text">
 
       <div class="tooltip-title">{{title}}</div>
       <div class="tooltip-person-text">hat <strong>{{count}}</strong> Verbindungen zu Organisationen.</div>
-      <div class="tooltip-subtitle">Aktuell bei {{subtitle}}.</div> 
+      <div class="tooltip-subtitle">Aktuell bei {{subtitle}}.</div>
 
     </script>
 
     <script id="template-tooltip-organisation" type="template/text">
 
-      <div class="tooltip-title">{{title}}</div>  
+      <div class="tooltip-title">{{title}}</div>
       <div class="tooltip-subtitle"><strong>{{count}}</strong> Verhandler haben für diese Organisation gearbeitet.</div>
 
     </script>
 
-
-    
-
   	<script src="js/main.js"></script>
+    <script>
+      TTIPViz.init(document.getElementById('my-id'), '/');
+    </script>
   </body>
 </html>

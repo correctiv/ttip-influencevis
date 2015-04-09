@@ -5,27 +5,24 @@ var $ = require('jquery');
 var utils = require('../utils');
 var infoArea = require('./info');
 
-var width = parseInt(d3.select('#visualization').style('width')),
-  height = width, //parseInt(d3.select('#visualization').style('height')),
-  radius = Math.min(width, height) / 2;
+var dim = {
+  width: 0,
+  height: 0,
+  radius: 0
+};
 
-
-d3.select('.viz').style('height', height + 'px')
+var container;
 
 var diagonal = d3.svg.diagonal();
 
 var innerArc = d3.svg.arc()
-  .outerRadius(radius - 70)
-  .innerRadius(radius - 70);
+  .outerRadius(dim.radius - 70)
+  .innerRadius(dim.radius - 70);
 
 var activePerson = null;
 var activeOrganisation = null;
 var activeChapterPersons = [];
-
-var chapterForce = d3.layout.force()
-  .size([width, height])
-  .gravity(.1)
-  .charge(-100);
+var chapterForce = d3.layout.force();
 
 $(document).on('reset', function(){
   resetActiveOrganisation();
@@ -41,7 +38,7 @@ var personColors = {
   euColor : '#284bdd',
   usColor : '#db2e4c',
   unknownColor : '#dddddd'
-}
+};
 
 var orgaColors = {
   'Europäische Kommission' : '#325a7c',
@@ -49,7 +46,7 @@ var orgaColors = {
   'Öffentlicher Arbeitgeber (US)': '#e9473e',
   'Privater Arbeitgeber': '#808080',
   'US-Handelsbehörde (USTR)': '#db2e4c'
-}
+};
 
 function appendCircleMask(svg) {
   svg
@@ -57,15 +54,15 @@ function appendCircleMask(svg) {
     .append('mask')
     .attr('id', 'mask-circle')
     .append('circle')
-    .attr('r', radius - 70)
-    .attr('cx', width / 2)
-    .attr('cy', height / 2)
+    .attr('r', dim.radius - 70)
+    .attr('cx', dim.width / 2)
+    .attr('cy', dim.height / 2)
     .style('fill', '#fff');
 }
 
 function appendConnectionGroup(svg){
    svg.append('g')
-    .classed('connection-group', true);  
+    .classed('connection-group', true);
 }
 
 function appendChapterCircleGroup(svg){
@@ -73,11 +70,24 @@ function appendChapterCircleGroup(svg){
     .classed('chapter-circle-group', true);
 }
 
-function createBaseSVG() {
-  return d3.select('#visualization')
+function createBaseSVG(element) {
+  container = d3.select(element);
+  var core = container.select('.viz-core');
+
+  dim.width = parseInt(core.style('width'));
+  dim.height = dim.width;
+  dim.radius = Math.min(dim.width, dim.height) / 2;
+
+  container.style('height', dim.height + 'px');
+
+  chapterForce.size([dim.width, dim.height])
+    .gravity(0.1)
+    .charge(-100);
+
+  return core
     .append('svg')
-    .attr('width', width)
-    .attr('height', height)
+    .attr('width', dim.width)
+    .attr('height', dim.height);
 }
 
 function drawConnections(svg, links) {
@@ -102,8 +112,8 @@ function getLink(svg, d){
     person = svg.select('#person-' + utils.slugify(d.data.pId)),
     personCentroid = [ parseFloat(person.attr('cx')), parseFloat(person.attr('cy'))]
 
-  arcCentroid[0] += width / 2;
-  arcCentroid[1] += height / 2;
+  arcCentroid[0] += dim.width / 2;
+  arcCentroid[1] += dim.height / 2;
 
   return {data: d.data, target : { x :arcCentroid[0], y : arcCentroid[1] }, source : { x : personCentroid[0], y : personCentroid[1] }};
 }
@@ -164,9 +174,7 @@ module.exports = {
   resetActiveOrganisation: resetActiveOrganisation,
   resetActivePerson: resetActivePerson,
   getLink: getLink,
-  width: width,
-  height: height,
-  radius: radius,
+  dim: dim,
   activePerson : activePerson,
   activeOrganisation : activeOrganisation,
   activeChapterPersons : activeChapterPersons,
