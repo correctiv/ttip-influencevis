@@ -88,9 +88,6 @@ function createBaseSVG(element) {
   innerArc.outerRadius(dim.radius - 70)
           .innerRadius(dim.radius - 70);
 
-
-  container.style('height', dim.height + 'px');
-
   chapterForce.size([dim.width, dim.height])
     .gravity(0.1)
     .charge(-100);
