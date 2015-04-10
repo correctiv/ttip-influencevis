@@ -54,7 +54,7 @@ var line = d3.svg.line()
   })
   .interpolate('basis');
 
-function init(baseSvg) {
+function init(baseSvg, lang) {
   shared = require('./shared');
 
   arc.outerRadius(shared.dim.radius - 15)
@@ -80,7 +80,7 @@ function init(baseSvg) {
     })
     .style({
       fill: function(d) {
-        return shared.orgaColors[d.data.sektor];
+        return shared.orgaColors[lang][d.data.sektor];
       },
       opacity: .8
     })

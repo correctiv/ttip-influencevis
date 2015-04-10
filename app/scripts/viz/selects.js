@@ -4,8 +4,9 @@ var datahandler = require('./datahandler');
 
 var container;
 
-var personSelectLabel = 'Person auswählen';
-var organisationSelectLabel = 'Person auswählen';
+
+var personSelectLabel = '-- Person --';
+var organisationSelectLabel = '-- Person --';
 
 
 function init(element){

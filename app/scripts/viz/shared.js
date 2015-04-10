@@ -39,11 +39,20 @@ var personColors = {
 };
 
 var orgaColors = {
-  'Europäische Kommission' : '#325a7c',
-  'Öffentlicher Arbeitgeber (EU)': '#3e74a0',
-  'Öffentlicher Arbeitgeber (US)': '#e9473e',
-  'Privater Arbeitgeber': '#808080',
-  'US-Handelsbehörde (USTR)': '#db2e4c'
+  de: {
+    'Europäische Kommission' : '#325a7c',
+    'Öffentlicher Arbeitgeber (EU)': '#3e74a0',
+    'Öffentlicher Arbeitgeber (US)': '#e9473e',
+    'Privater Arbeitgeber': '#808080',
+    'US-Handelsbehörde (USTR)': '#db2e4c'
+  },
+  en: {
+    'European Commission' : '#325a7c',
+    'Public Sector (EU)': '#3e74a0',
+    'Public sector (US)': '#e9473e',
+    'Private sector': '#808080',
+    'Office of the U.S. Trade Representative (USTR)': '#db2e4c'
+  }
 };
 
 function appendCircleMask(svg) {

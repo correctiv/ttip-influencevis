@@ -4,10 +4,57 @@ var data = {};
 var sektorTypes = {};
 var chapters = {};
 
-var orgaSorting = ['US-Handelsbehörde (USTR)', 'Öffentlicher Arbeitgeber (US)', 'Privater Arbeitgeber', 'Öffentlicher Arbeitgeber (EU)', 'Europäische Kommission'];
+var orgaSorting = {
+  de: [
+      'US-Handelsbehörde (USTR)',
+      'Öffentlicher Arbeitgeber (US)',
+      'Privater Arbeitgeber',
+      'Öffentlicher Arbeitgeber (EU)',
+      'Europäische Kommission'
+      ],
+  en: [
+    'Office of the U.S. Trade Representative (USTR)',
+    'Public sector (US)',
+    'Private sector',
+    'Public Sector (EU)',
+    'European Commission'
+  ]
+};
 var orgaPersons = {};
 
-function init(d){
+var translations ={
+  publicSector: {
+    de: 'Öffentlicher Arbeitgeber',
+    en: 'Public sector',
+  },
+  commission: {
+    de: 'Europäische Kommission',
+    en: 'European Commission',
+  },
+  commissionOther: {
+    de: 'Europäische Kommission Sonstige',
+    en: 'European Commission Other',
+  },
+  directorateGeneral: {
+    de: 'Generaldirektion',
+    en: 'Directorate-General',
+  },
+  since: {
+    de: 'seit',
+    en: 'since'
+  },
+  until: {
+    de: 'bis',
+    en: 'until'
+  }
+};
+
+function init(d, lang){
+
+  var publicSector = translations.publicSector[lang];
+  var commission =  translations.commission[lang];
+  var commissionOther = translations.commissionOther[lang];
+  var directorateGeneral = translations.directorateGeneral[lang];
 
   // handle person data
   var persons = getPersonsAsArray(d.persons);
@@ -24,15 +71,15 @@ function init(d){
 
       if(job.sektor){
 
-        if(job.sektor === 'Öffentlicher Arbeitgeber'){
+        if(job.sektor === publicSector){
           job.sektor = person.isEU ? job.sektor + ' (EU)' : job.sektor + ' (US)';
           job.sektorType = job.organisation;
-        }else if(job.sektor === 'Europäische Kommission'){
+        }else if(job.sektor === commission){
 
-          if(job.organisation.indexOf('Generaldirektion') !== -1){
+          if(job.organisation.indexOf(directorateGeneral) !== -1){
             job.sektorType = job.organisation;
           }else{
-            job.sektorType = 'Europäische Kommission Sonstige';
+            job.sektorType = commissionOther;
           }
         }else{
           job.sektorType = job.sektor;
@@ -52,7 +99,7 @@ function init(d){
 
       }
 
-      job.color = shared.orgaColors[job.sektor];
+      job.color = shared.orgaColors[lang][job.sektor];
 
       // count organisations
       if(utils.isUndefined(sektorTypes[job.sektorType]) && job.sektorType){
@@ -68,12 +115,12 @@ function init(d){
       job.dateLabel = '';
 
       var fromSplit = job.from.split('-'),
-        toSplit = job.to.split('-')
+          toSplit = job.to.split('-');
 
       if(job.from && !job.to){
-        job.dateLabel = 'seit ' + fromSplit[0];
+        job.dateLabel = translations.since[lang] + ' ' + fromSplit[0];
       }else if(!job.from && job.to){
-        job.dateLabel = 'bis ' + toSplit[0];
+        job.dateLabel = translations.until[lang] + ' ' + toSplit[0];
       }else if(job.from && job.to){
 
         var toYear = toSplit[0],
@@ -116,7 +163,7 @@ function init(d){
   persons.forEach(function(person){
     person.jobs.forEach(function(job){
       var count = sektorTypes[job.sektorType].count,
-        sortIndex = orgaSorting.indexOf(job.sektor);
+        sortIndex = orgaSorting[lang].indexOf(job.sektor);
 
       if(sortIndex !== -1){
         personsInOrganisations.push({
@@ -146,7 +193,7 @@ function init(d){
 
     var sektorData = sektorTypes[sektorType],
       count = sektorData.count,
-      sortIndex = orgaSorting.indexOf(sektorData.sektor);
+      sortIndex = orgaSorting[lang].indexOf(sektorData.sektor);
 
     if(sortIndex !== -1){
       organisations.push({

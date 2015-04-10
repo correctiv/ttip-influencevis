@@ -20,7 +20,7 @@
           </div>
           <div class="select-wrapper">
             <select class="select-organisation">
-              <option>Organisation auswählen</option>
+              <option>-- Organisation --</option>
             </select>
           </div>
       </div>
@@ -36,7 +36,7 @@
 
 
     <!-- we use this template to display the person tooltip -->
-    <script class="template-info-person" type="template/text">
+    <script class="template-info-person_de" type="template/text">
 
       <div class="info-person">
 
@@ -77,7 +77,7 @@
 
 
     <!-- we use this template to display the organisation tooltip -->
-    <script class="template-info-organisation" type="template/text">
+    <script class="template-info-organisation_de" type="template/text">
 
       <div class="info-organisation">
 
@@ -100,7 +100,7 @@
 
 
     <!-- we use this template to display the standard tooltip content -->
-    <script class="template-info-intro" type="template/text">
+    <script class="template-info-intro_de" type="template/text">
 
       <div class="info-intro">
 
@@ -109,7 +109,7 @@
     </script>
 
 
-    <script class="template-tooltip-person" type="template/text">
+    <script class="template-tooltip-person_de" type="template/text">
 
       <div class="tooltip-title">{{title}}</div>
       <div class="tooltip-person-text">hat <strong>{{count}}</strong> Verbindungen zu Organisationen.</div>
@@ -117,10 +117,100 @@
 
     </script>
 
-    <script class="template-tooltip-organisation" type="template/text">
+    <script class="template-tooltip-organisation_de" type="template/text">
 
       <div class="tooltip-title">{{title}}</div>
       <div class="tooltip-subtitle">Es gibt <strong>{{count}}</strong>  Verbindungen zu dieser Organisation.</div>
+
+    </script>
+
+    <!-- Translation -->
+
+    <script class="template-info-person_en" type="template/text">
+
+      <div class="info-person">
+
+        <div class="info-headline">Person</div>
+        <div class="info-title">{{name}}</div>
+        <div class="info-subtitle">
+          {{ttip_position}}
+          {{#chapters}}
+          <ul class="chapter-list">
+            <li>{{.}}</li>
+          </ul>
+          {{/chapters}}
+          </div>
+        <div class="info-subtitle"><strong>{{ttip_institution}}</strong></div>
+
+        {{#hasJobs}}
+        <div class="info-headline">Biography</div>
+
+        <ul class="info-person-organisations info-list">
+
+        {{#jobs}}
+          <li class="info-person-organisation">
+            <span style="display:none" class="sektor-name">{{sektorType}}</span>
+            <span class="color-box" style="background-color: {{color}};"></span>
+            <strong>{{organisation}}</strong>
+            {{#position}}<br />{{position}} {{/position}}
+            {{#dateLabel}}<br /><i>{{dateLabel}}</i>{{/dateLabel}}
+          </li>
+        {{/jobs}}
+        </ul>
+
+        {{/hasJobs}}
+
+
+      </div>
+
+    </script>
+
+
+    <!-- we use this template to display the organisation tooltip -->
+    <script class="template-info-organisation_en" type="template/text">
+
+      <div class="info-organisation">
+
+        <div class="info-headline">Organisation</div>
+
+        <div class="info-title">{{id}}</div>
+        <div class="info-subtitle">The following persons have or had connections to these organisations:</div>
+
+        <ul class="info-organisation-persons info-list">
+        {{#persons}}
+          <li class="info-organisation-person"><span class="color-box" style="background-color: {{color}};"></span>{{name}}</li>
+        {{/persons}}
+        </ul>
+
+
+      </div>
+
+    </script>
+
+
+
+    <!-- we use this template to display the standard tooltip content -->
+    <script class="template-info-intro_en" type="template/text">
+
+      <div class="info-intro">
+
+      </div>
+
+    </script>
+
+
+    <script class="template-tooltip-person_en" type="template/text">
+
+      <div class="tooltip-title">{{title}}</div>
+      <div class="tooltip-person-text">has <strong>{{count}}</strong> connections to organisations.</div>
+      <div class="tooltip-subtitle">Currently at {{subtitle}}.</div>
+
+    </script>
+
+    <script class="template-tooltip-organisation_en" type="template/text">
+
+      <div class="tooltip-title">{{title}}</div>
+      <div class="tooltip-subtitle">There are <strong>{{count}}</strong> connections to this organisation.</div>
 
     </script>
 
@@ -128,7 +218,13 @@
 
   	<script src="js/main.js"></script>
     <script>
-      TTIPViz.init(document.getElementById('my-id'), document.location.pathname);
+      TTIPViz.init(
+        document.getElementById('my-id'),
+        {
+          path: document.location.pathname,
+          lang: document.location.search.substr(1)
+        }
+      );
     </script>
   </body>
 </html>

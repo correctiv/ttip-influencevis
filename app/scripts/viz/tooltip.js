@@ -12,9 +12,9 @@ var offset = {
 };
 
 // compiles template and init tooltip dom element
-function init(container){
-  tooltipTemplatePerson = Hogan.compile(container.select('.template-tooltip-person').html());
-  tooltipTemplateOrganisation = Hogan.compile(container.select('.template-tooltip-organisation').html());
+function init(container, lang){
+  tooltipTemplatePerson = Hogan.compile(container.select('.template-tooltip-person_' + lang).html());
+  tooltipTemplateOrganisation = Hogan.compile(container.select('.template-tooltip-organisation_' + lang).html());
 
   tooltip = container
     .append('div')
