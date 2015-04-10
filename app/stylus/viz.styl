@@ -3,17 +3,18 @@
   max-width: 1000px
   margin: 0 auto
   position: relative
-  background: white;
+  background: white
 
   .viz-core
   .viz-info
+    width: 100%
     float: left
     user-select: none
     overflow: visible
-    padding: 30px 15px;
 
   .viz-core
-    width: 66.66%
+    @media screen and (min-width: 768px)
+      width: 66.66%
 
     .organisation
       cursor: pointer
@@ -37,9 +38,10 @@
 
   .viz-info
     font-size: 12px
-    width: 33.33%
-    height: 100%
     position: relative
+
+    @media screen and (min-width: 768px)
+      width: 33.33%
 
     &.active
       .viz-info-close
@@ -56,11 +58,6 @@
       &:hover
         opacity: .75
 
-    .viz-info-content
-      height: 100%
-      overflow-y: auto
-      padding: 10px
-
     .chapter-list
       margin: 10px 0
       padding: 0
@@ -76,19 +73,25 @@
     .info-title
       padding: 0
       margin: 0
-      font-family: "Neuzeit", sans-serif;
+      font-family: "Neuzeit", sans-serif
       font-weight: bold
       font-size: 18px
 
     .info-headline
       margin: 10px 0
       font-weight: bold
-      font-family: "Neuzeit", sans-serif;
-      font-size: 14px;
+      font-family: "Neuzeit", sans-serif
+      font-size: 14px
 
     .info-subtitle
       font-style: italic
       padding-top: 5px
+
+    .info-person,
+    .info-organisation
+      border-radius: 3px
+      border: 1px solid #dadada
+      padding: 10px
 
     .info-organisation-name
       font-weight: bold
@@ -103,7 +106,7 @@
         margin: 0
         padding: 0 0 10px 20px
         cursor: pointer
-        line-height: 1.4;
+        line-height: 1.4
 
         .color-box
           display: inline-block
@@ -143,19 +146,3 @@
 
     .tooltip-person-text
       margin-bottom: 5px
-
-
-@media only screen and (max-width: 700px)
-  .ttip-viz
-    .viz-core
-      width: 100%
-    .viz-info
-      position: absolute
-      right: 0
-      top: 0
-      display: none
-      width: 250px
-      border-left: 1px solid #eee
-
-      &.active
-        display: block
