@@ -1,19 +1,19 @@
 .ttip-viz
-  width: 98%
+  width: 100%
   max-width: 1000px
   margin: 0 auto
   position: relative
+  background: white;
 
   .viz-core
   .viz-info
-    background: white
     float: left
-    height: 100%
     user-select: none
     overflow: visible
+    padding: 30px 15px;
 
   .viz-core
-    width: 70%
+    width: 66.66%
 
     .organisation
       cursor: pointer
@@ -35,14 +35,11 @@
       pointer-events: none
       width: 200px
 
-
   .viz-info
     font-size: 12px
-    width: 30%
+    width: 33.33%
     height: 100%
-    padding: 1em 0
     position: relative
-
 
     &.active
       .viz-info-close
@@ -64,30 +61,65 @@
       overflow-y: auto
       padding: 10px
 
+    .chapter-list
+      margin: 10px 0
+      padding: 0
+      list-style: none
+
+      li
+        display: block
+        margin: 0
+        padding: 10px
+        background: #eee
+        border-bottom: 1px solid #bbb
+
     .info-title
+      padding: 0
+      margin: 0
+      font-family: "Neuzeit", sans-serif;
       font-weight: bold
       font-size: 18px
 
     .info-headline
+      margin: 10px 0
       font-weight: bold
-      margin: 1em 0
+      font-family: "Neuzeit", sans-serif;
+      font-size: 14px;
+
+    .info-subtitle
+      font-style: italic
+      padding-top: 5px
+
+    .info-organisation-name
+      font-weight: bold
+      padding: 5px 0 10px 0
 
     .info-list
+      margin: 0
+      padding: 0
+      list-style: none
+
       li
-        margin-bottom: 5px
+        margin: 0
+        padding: 0 0 10px 20px
         cursor: pointer
+        line-height: 1.4;
 
         .color-box
           display: inline-block
           width: 10px
           height: 10px
-          margin-right: 5px
+          margin: 0 5px 0 -20px
 
         &:hover
           opacity: .8
 
-    .info-person-organisations
-      padding-left: 20px
+    .info-person-organisation__title
+      margin: 0
+      padding: 0
+
+    .info-person-organisation__date
+      display: inline-block
 
     .info-organisation-persons
       margin-top: 20px

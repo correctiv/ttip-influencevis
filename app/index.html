@@ -15,7 +15,12 @@
 
     <div class="ttip-viz clearfix" id="my-id">
 
-      <div class="select-boxes">
+      <div class="viz-core">
+        <div class="chapter-title"></div>
+      </div>
+
+      <div class="viz-info">
+        <div class="select-boxes">
           <div class="select-wrapper">
             <select class="select-person"></select>
           </div>
@@ -24,13 +29,8 @@
               <option>-- Organisation --</option>
             </select>
           </div>
-      </div>
+        </div>
 
-      <div class="viz-core">
-        <div class="chapter-title"></div>
-
-      </div>
-      <div class="viz-info">
         <div class="viz-info-close">&times;</div>
         <div class="viz-info-content"></div>
       </div>
@@ -42,29 +42,32 @@
       <div class="info-person">
 
         <div class="info-headline">Person</div>
-        <div class="info-title">{{name}}</div>
+        <h2 class="info-title">{{name}}</h2>
         <div class="info-subtitle">
           {{ttip_position}}
-          {{#chapters}}
-          <ul class="chapter-list">
-            <li>{{.}}</li>
-          </ul>
-          {{/chapters}}
-          </div>
-        <div class="info-subtitle"><strong>{{ttip_institution}}</strong></div>
+        </div>
+        <ul class="chapter-list">
+        {{#chapters}}
+          <li>{{.}}</li>
+        {{/chapters}}
+        </ul>
+
+        <div class="info-organisation-name">{{ttip_institution}}</div>
 
         {{#hasJobs}}
-        <div class="info-headline">Biographie</div>
+        <h3 class="info-headline">Biographie</h3>
 
         <ul class="info-person-organisations info-list">
 
         {{#jobs}}
           <li class="info-person-organisation">
             <span style="display:none" class="sektor-name">{{sektorType}}</span>
-            <span class="color-box" style="background-color: {{color}};"></span>
-            <strong>{{organisation}}</strong>
-            {{#position}}<br />{{position}} {{/position}}
-            {{#dateLabel}}<br /><i>{{dateLabel}}</i>{{/dateLabel}}
+            <h4 class="info-person-organisation__title">
+              <span class="color-box" style="background-color: {{color}};"></span>
+              <span class="info-person-organisation__organisation-name">{{organisation}}</span>
+            </h4>
+            {{#position}}<span class="info-person-organisation__position">{{position}}</span>{{/position}}
+            {{#dateLabel}}<span class="info-person-organisation__date">({{dateLabel}})</span>{{/dateLabel}}
           </li>
         {{/jobs}}
         </ul>
@@ -84,7 +87,7 @@
 
         <div class="info-headline">Organisation</div>
 
-        <div class="info-title">{{id}}</div>
+        <h3 class="info-title">{{id}}</h3>
         <div class="info-subtitle">Folgende Personen haben oder hatten Verbindungen zu dieser Organisation:</div>
 
         <ul class="info-organisation-persons info-list">
@@ -92,7 +95,6 @@
           <li class="info-organisation-person"><span class="color-box" style="background-color: {{color}};"></span>{{name}}</li>
         {{/persons}}
         </ul>
-
 
       </div>
 
@@ -133,14 +135,12 @@
 
         <div class="info-headline">Person</div>
         <div class="info-title">{{name}}</div>
-        <div class="info-subtitle">
-          {{ttip_position}}
-          {{#chapters}}
-          <ul class="chapter-list">
-            <li>{{.}}</li>
-          </ul>
-          {{/chapters}}
-          </div>
+        <div class="info-subtitle">{{ttip_position}}</div>
+        <ul class="chapter-list">
+        {{#chapters}}
+          <li>{{.}}</li>
+        {{/chapters}}
+        </ul>
         <div class="info-subtitle"><strong>{{ttip_institution}}</strong></div>
 
         {{#hasJobs}}
