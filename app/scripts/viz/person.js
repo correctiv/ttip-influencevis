@@ -1,7 +1,7 @@
 var d3 = require('d3');
 var $ = require('jquery');
 var utils = require('../utils');
-var shared = require('./shared');
+var shared;
 var infoArea = require('./info');
 var tooltip = require('./tooltip');
 var dataHandler = require('./datahandler');
@@ -17,16 +17,18 @@ var charge = -120;
 var personRaduis = 4;
 var chapterTitleOffset = 20;
 
-var force = d3.layout.force()
-  .size([shared.dim.width, shared.dim.height])
-  .gravity(0.3)
-  .on('tick', tick);
-
-var x = d3.scale.ordinal()
-  .domain(d3.range(2))
-  .rangePoints([shared.dim.width * .45 - (shared.dim.radius * .5), shared.dim.width * .55 + (shared.dim.radius * .5)], 1);
+var force = d3.layout.force();
+var x = d3.scale.ordinal();
 
 function init(svgBase, activePerson, activeOrganisation) {
+  shared = require('./shared');
+
+  force.size([shared.dim.width, shared.dim.height])
+    .gravity(0.3)
+    .on('tick', tick);
+  x.domain(d3.range(2))
+    .rangePoints([shared.dim.width * .45 - (shared.dim.radius * .5), shared.dim.width * .55 + (shared.dim.radius * .5)], 1);
+
 
   svg = svgBase;
   data = dataHandler.getData();
@@ -116,7 +118,7 @@ function handleClick(e){
   shared.activePerson = e.name;
   shared.activeOrganisation = null;
 
-  var personSelection = d3.select('#person-' + utils.slugify(e.name));
+  var personSelection = shared.container.select('#person-' + utils.slugify(e.name));
 
   personSelection
     .style({
@@ -233,7 +235,7 @@ function handleChapter(currentPerson, e){
     var isPointRight = currentCenter[0] > (svgWidth/2),
       chapterTitleLeft = isPointRight ? currentCenter[0] - (200 + chapterTitleOffset) : currentCenter[0] + chapterTitleOffset;
 
-    d3.selectAll('.chapter-title')
+    shared.container.selectAll('.chapter-title')
       .style({
         left : chapterTitleLeft + 'px',
         top : (currentCenter[1] + chapterTitleOffset) + 'px',
@@ -263,7 +265,7 @@ function drawLinks(e){
   // create links
   var links = [];
 
-  d3.selectAll('.person-in-organisation')
+  shared.container.selectAll('.person-in-organisation')
     // select all parts of the organisation of the hovered person
     .filter(function(p) {
       return p.data.pId === e.id;

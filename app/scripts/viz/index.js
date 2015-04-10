@@ -9,17 +9,21 @@ d3.selection.prototype.moveToFront = function() {
 
 function init(container, path){
   var shared = require('./shared');
+  container = d3.select(container);
+  shared.container = container;
   var svg = shared.createBaseSVG(container);
 
   var infoArea = require('./info');
   var tooltip = require('./tooltip');
+
+  infoArea.init(container);
+  tooltip.init(container);
+
   var dataHandler = require('./datahandler');
   var organisation = require('./organisation');
   var person = require('./person');
   var selects = require('./selects');
 
-  infoArea.init(shared);
-  tooltip.init();
 
   shared.appendCircleMask(svg);
   shared.appendChapterCircleGroup(svg);
@@ -34,7 +38,7 @@ function init(container, path){
     dataHandler.init(data);
     organisation.init(svg, data);
     person.init(svg, activePerson, activeOrganisation);
-    selects.init();
+    selects.init(container);
   });
 }
 

@@ -15,9 +15,7 @@ var container;
 
 var diagonal = d3.svg.diagonal();
 
-var innerArc = d3.svg.arc()
-  .outerRadius(dim.radius - 70)
-  .innerRadius(dim.radius - 70);
+var innerArc = d3.svg.arc();
 
 var activePerson = null;
 var activeOrganisation = null;
@@ -30,8 +28,8 @@ $(document).on('reset', function(){
   resetActiveChapterPersons();
   infoArea.reset();
 
-  d3.selectAll('.person').style('opacity', 1);
-  d3.selectAll('.connection').remove();
+  container.selectAll('.person').style('opacity', 1);
+  container.selectAll('.connection').remove();
 });
 
 var personColors = {
@@ -71,12 +69,16 @@ function appendChapterCircleGroup(svg){
 }
 
 function createBaseSVG(element) {
-  container = d3.select(element);
+  container = element;
   var core = container.select('.viz-core');
 
   dim.width = parseInt(core.style('width'));
   dim.height = dim.width;
   dim.radius = Math.min(dim.width, dim.height) / 2;
+
+  innerArc.outerRadius(dim.radius - 70)
+          .innerRadius(dim.radius - 70);
+
 
   container.style('height', dim.height + 'px');
 
@@ -92,7 +94,7 @@ function createBaseSVG(element) {
 
 function drawConnections(svg, links) {
 
-  d3.select('.person-group')
+  container.select('.person-group')
     .selectAll('.connection')
     .data(links)
     .enter()
@@ -103,7 +105,7 @@ function drawConnections(svg, links) {
     .attr('fill', 'none')
     .attr('d', diagonal);
 
-  d3.selectAll('.person').moveToFront();
+  container.selectAll('.person').moveToFront();
 }
 
 function getLink(svg, d){
@@ -121,7 +123,7 @@ function getLink(svg, d){
 function resetActiveOrganisation(){
   activeOrganisation = null;
 
-  d3.selectAll('.organisation')
+  container.selectAll('.organisation')
     .style({
       stroke: '#fff',
       'stroke-width' : '1px'
@@ -131,7 +133,7 @@ function resetActiveOrganisation(){
 function resetActivePerson(){
   activePerson = null;
 
-  d3.selectAll('.person')
+  container.selectAll('.person')
     .style({
       stroke: 'none'
     });
@@ -141,13 +143,13 @@ function resetActiveChapterPersons(){
 
   chapterForce.stop();
 
-  d3.selectAll('.chapter-circle')
+  container.selectAll('.chapter-circle')
     .remove();
 
-  d3.selectAll('.chapter-title')
+  container.selectAll('.chapter-title')
     .style('display', 'none');
 
-  d3.selectAll('.chapter-person')
+  container.selectAll('.chapter-person')
     .classed('chapter-person', false)
     .transition()
     .duration(400)

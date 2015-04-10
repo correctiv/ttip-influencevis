@@ -17,8 +17,7 @@ function init(d){
     person.isEU = person.ttip_party === 'EU';
     person.orgaIds = [];
     person.id = person.name;
-    
-    
+
     person.jobs.forEach(function(job){
 
       job.sektorType = '';
@@ -29,7 +28,7 @@ function init(d){
           job.sektor = person.isEU ? job.sektor + ' (EU)' : job.sektor + ' (US)';
           job.sektorType = job.organisation;
         }else if(job.sektor === 'Europäische Kommission'){
-          
+
           if(job.organisation.indexOf('Generaldirektion') !== -1){
             job.sektorType = job.organisation;
           }else{
@@ -90,11 +89,11 @@ function init(d){
 
     });
 
-    // remove empty chapters 
+    // remove empty chapters
     if(person.chapters.length === 1 && !person.chapters[0]){
       person.chapters = [];
     }
-    
+
     person.hasJobs = person.jobs.length > 0;
     person.hasChapters = person.chapters.length > 0;
 
@@ -111,7 +110,7 @@ function init(d){
   });
 
   // handle person in organisation data (we need this for drawing the connections)
-  
+
   var personsInOrganisations = [];
 
   persons.forEach(function(person){
@@ -121,7 +120,7 @@ function init(d){
 
       if(sortIndex !== -1){
         personsInOrganisations.push({
-          id: job.sektorType, 
+          id: job.sektorType,
           orgaName: job.organisation,
           pId: person.name,
           count: count,
@@ -142,7 +141,7 @@ function init(d){
       return b.isEU - a.isEU;
     });
   }
-  
+
   for (var sektorType in sektorTypes) {
 
     var sektorData = sektorTypes[sektorType],
@@ -156,7 +155,7 @@ function init(d){
         count: count,
         sortIndex : sortIndex,
         persons : orgaPersons[sektorType]
-      });     
+      });
     }
   }
 

@@ -1,6 +1,6 @@
 var d3 = require('d3');
 var $ = require('jquery');
-var shared = require('./shared');
+var shared; // init later;
 var infoArea = require('./info');
 var dataHandler = require('./datahandler');
 var tooltip = require('./tooltip');
@@ -8,9 +8,7 @@ var utils = require('../utils');
 
 var svg = null;
 var data = null;
-var arc = d3.svg.arc()
-  .outerRadius(shared.dim.radius - 15)
-  .innerRadius(shared.dim.radius - 70);
+var arc = d3.svg.arc();
 
 var pieSort = function(a, b) {
 
@@ -57,6 +55,11 @@ var line = d3.svg.line()
   .interpolate('basis');
 
 function init(baseSvg) {
+  shared = require('./shared');
+
+  arc.outerRadius(shared.dim.radius - 15)
+     .innerRadius(shared.dim.radius - 70);
+
 
   svg = baseSvg;
   data = dataHandler.getData();
@@ -117,7 +120,7 @@ function handleClick(e){
   shared.activeOrganisation = e.data.id;
   shared.activePerson = null;
 
-  var orgaSelection = d3.select('#organisation-' + e.data.sektorType);
+  var orgaSelection = shared.container.select('.organisation-' + e.data.sektorType);
 
   orgaSelection
     .style({
@@ -153,7 +156,7 @@ function drawLinks(e){
 
   var links = [];
 
-  d3.selectAll('.person-in-organisation')
+  shared.container.selectAll('.person-in-organisation')
     .filter(function(d) {
       return d.data.id === e.data.id;
     })
@@ -164,7 +167,7 @@ function drawLinks(e){
 
   shared.drawConnections(svg, links);
 
-  d3.selectAll('.person')
+  shared.container.selectAll('.person')
     .style('opacity', 1)
     .filter(function(p) {
       if (typeof p.orgaIds === 'undefined') {
@@ -185,7 +188,7 @@ function handleMouseOut(e) {
     return false;
   }
 
-  d3.selectAll('.person').style('opacity', 1);
+  shared.container.selectAll('.person').style('opacity', 1);
   svg.selectAll('.connection').remove();
 }
 

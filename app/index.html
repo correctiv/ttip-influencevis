@@ -12,14 +12,14 @@
   </head>
   <body>
 
-    <div class="viz clearfix" id="my-id">
+    <div class="ttip-viz clearfix" id="my-id">
 
       <div class="select-boxes">
           <div class="select-wrapper">
-            <select id="select-person"></select>
+            <select class="select-person"></select>
           </div>
           <div class="select-wrapper">
-            <select id="select-organisation">
+            <select class="select-organisation">
               <option>Organisation auswählen</option>
             </select>
           </div>
@@ -33,17 +33,23 @@
         <div class="viz-info-close">&times;</div>
         <div class="viz-info-content"></div>
       </div>
-    </div>
 
 
     <!-- we use this template to display the person tooltip -->
-    <script id="template-info-person" type="template/text">
+    <script class="template-info-person" type="template/text">
 
       <div class="info-person">
 
         <div class="info-headline">Person</div>
         <div class="info-title">{{name}}</div>
-        {{#chapters}}<div class="info-subtitle">Verhandler: {{chapters}}</div>{{/chapters}}
+        <div class="info-subtitle">
+          {{ttip_position}}
+          {{#chapters}}
+          <ul class="chapter-list">
+            <li>{{.}}</li>
+          </ul>
+          {{/chapters}}
+          </div>
         <div class="info-subtitle"><strong>{{ttip_institution}}</strong></div>
 
         {{#hasJobs}}
@@ -71,7 +77,7 @@
 
 
     <!-- we use this template to display the organisation tooltip -->
-    <script id="template-info-organisation" type="template/text">
+    <script class="template-info-organisation" type="template/text">
 
       <div class="info-organisation">
 
@@ -94,7 +100,7 @@
 
 
     <!-- we use this template to display the standard tooltip content -->
-    <script id="template-info-intro" type="template/text">
+    <script class="template-info-intro" type="template/text">
 
       <div class="info-intro">
 
@@ -106,7 +112,7 @@
     </script>
 
 
-    <script id="template-tooltip-person" type="template/text">
+    <script class="template-tooltip-person" type="template/text">
 
       <div class="tooltip-title">{{title}}</div>
       <div class="tooltip-person-text">hat <strong>{{count}}</strong> Verbindungen zu Organisationen.</div>
@@ -114,12 +120,14 @@
 
     </script>
 
-    <script id="template-tooltip-organisation" type="template/text">
+    <script class="template-tooltip-organisation" type="template/text">
 
       <div class="tooltip-title">{{title}}</div>
-      <div class="tooltip-subtitle"><strong>{{count}}</strong> Verhandler haben für diese Organisation gearbeitet.</div>
+      <div class="tooltip-subtitle">Es gibt <strong>{{count}}</strong>  Verbindungen zu dieser Organisation.</div>
 
     </script>
+
+    </div>
 
   	<script src="js/main.js"></script>
     <script>
