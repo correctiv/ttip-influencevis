@@ -242,7 +242,7 @@ function handleChapter(currentPerson, e){
         display : 'block',
         'text-align': isPointRight ? 'right' : 'left'
       })
-      .html(e.chapters.toString());
+      .html(e.chapters.join(', '));
 
 
     svg.selectAll('.connection').moveToFront();

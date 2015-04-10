@@ -58,7 +58,6 @@
         <h3 class="info-headline">Biographie</h3>
 
         <ul class="info-person-organisations info-list">
-
         {{#jobs}}
           <li class="info-person-organisation">
             <span style="display:none" class="sektor-name">{{sektorType}}</span>
@@ -141,20 +140,21 @@
           <li>{{.}}</li>
         {{/chapters}}
         </ul>
-        <div class="info-subtitle"><strong>{{ttip_institution}}</strong></div>
+        <div class="info-organisation-name">{{ttip_institution}}</div>
 
         {{#hasJobs}}
         <div class="info-headline">Biography</div>
 
         <ul class="info-person-organisations info-list">
-
         {{#jobs}}
           <li class="info-person-organisation">
             <span style="display:none" class="sektor-name">{{sektorType}}</span>
-            <span class="color-box" style="background-color: {{color}};"></span>
-            <strong>{{organisation}}</strong>
-            {{#position}}<br />{{position}} {{/position}}
-            {{#dateLabel}}<br /><i>{{dateLabel}}</i>{{/dateLabel}}
+            <h4 class="info-person-organisation__title">
+              <span class="color-box" style="background-color: {{color}};"></span>
+              <span class="info-person-organisation__organisation-name">{{organisation}}</span>
+            </h4>
+            {{#position}}<span class="info-person-organisation__position">{{position}}</span>{{/position}}
+            {{#dateLabel}}<span class="info-person-organisation__date">({{dateLabel}})</span>{{/dateLabel}}
           </li>
         {{/jobs}}
         </ul>
