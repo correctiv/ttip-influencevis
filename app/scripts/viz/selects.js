@@ -71,10 +71,15 @@ function bindEvents(){
   });
 }
 
+var lastNameGetter = function(x){
+  splitnames = x.name.split(' ');
+  return splitnames[splitnames.length - 1];
+};
+
 function personSort(a, b){
-  if(a.name < b.name){
+  if(lastNameGetter(a) < lastNameGetter(b)){
     return -1;
-  }else if(a.name > b.name){
+  }else if(lastNameGetter(a) > lastNameGetter(b)){
     return 1;
   }
   return 0;
