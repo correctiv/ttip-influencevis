@@ -1,9 +1,9 @@
-.viz 
+.ttip-viz
   width:98%
   max-width:1000px
   margin: 0 auto
   position: relative
-    
+
   .viz-core
   .viz-info
     background:white
@@ -18,15 +18,15 @@
     .organisation
       cursor: pointer
       stroke: #fff
-      
+
     .person
       cursor:pointer
       opacity: 0
       transition: opacity .4s
-    
+
     .person-unknown
       cursor:default
-    
+
     .chapter-title
       position: absolute
       font-size: 12px
@@ -36,84 +36,85 @@
       width:200px
 
 
-.viz-info
-  font-size: 12px
-  width:30%
-  height:100%
-  padding:1em 0
-  position:relative
-  
-
-  &.active
-    .viz-info-close
-      display:block
-
-  .viz-info-close
-    position:absolute
-    right:1em
-    top:.5em
-    font-size:20px
-    cursor:pointer
-    display:none
-    
-    &:hover
-      opacity:.75
-  
-  .viz-info-content
+  .viz-info
+    font-size: 12px
+    width:30%
     height:100%
-    overflow-y: auto
-    padding:10px
-  
-  .info-title
-    font-weight: bold
-    font-size:18px
-  
-  .info-headline
-    font-weight:bold
-    margin:1em 0
-  
-  .info-list
-    li
-      margin-bottom:5px
+    padding:1em 0
+    position:relative
+
+
+    &.active
+      .viz-info-close
+        display:block
+
+    .viz-info-close
+      position:absolute
+      right:1em
+      top:.5em
+      font-size:20px
       cursor:pointer
-      
-      .color-box
-        display:inline-block
-        width:10px
-        height:10px
-        margin-right:5px
+      display:none
 
       &:hover
-        opacity: .8      
+        opacity:.75
 
-  .info-person-organisations
-    padding-left:20px
+    .viz-info-content
+      height:100%
+      overflow-y: auto
+      padding:10px
 
-  .info-organisation-persons
-    margin-top:20px
-    list-style:none
+    .info-title
+      font-weight: bold
+      font-size:18px
 
-    .color-box
-      border-radius:20px
+    .info-headline
+      font-weight:bold
+      margin:1em 0
 
-#tooltip
-  background:rgba(255,255,255,.85)
-  pointer-events:none
-  position:absolute
-  padding:1em
-  font-size:12px
-  max-width:200px
-  
-  .tooltip-title
-    font-weight: bold
-    margin-bottom:5px
-  
-  .tooltip-person-text
-    margin-bottom:5px
-    
+    .info-list
+      li
+        margin-bottom:5px
+        cursor:pointer
+
+        .color-box
+          display:inline-block
+          width:10px
+          height:10px
+          margin-right:5px
+
+        &:hover
+          opacity: .8
+
+    .info-person-organisations
+      padding-left:20px
+
+    .info-organisation-persons
+      margin-top:20px
+      list-style:none
+
+      .color-box
+        border-radius:20px
+
+.ttip-viz
+  .tooltip
+    background:rgba(255,255,255,.85)
+    pointer-events:none
+    position:absolute
+    padding:1em
+    font-size:12px
+    max-width:200px
+
+    .tooltip-title
+      font-weight: bold
+      margin-bottom:5px
+
+    .tooltip-person-text
+      margin-bottom:5px
+
 
 @media only screen and (max-width: 700px)
-  .viz
+  .ttip-viz
     .viz-core
       width:100%
     .viz-info
@@ -123,6 +124,6 @@
       display:none
       width:250px
       border-left:1px solid #eee
-      
+
       &.active
         display:block
