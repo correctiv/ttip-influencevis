@@ -48,7 +48,7 @@ var orgaColors = {
   },
   en: {
     'European Commission' : '#325a7c',
-    'Public Sector (EU)': '#3e74a0',
+    'Public sector (EU)': '#3e74a0',
     'Public sector (US)': '#e9473e',
     'Private sector': '#808080',
     'Office of the U.S. Trade Representative (USTR)': '#db2e4c'
