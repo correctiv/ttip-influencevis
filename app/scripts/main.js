@@ -2,4 +2,9 @@ var utils = require('./utils');
 var viz = require('./viz');
 
 utils.addHelperClasses();
-viz.init();
+
+var TTIPViz = {
+  init: viz.init
+};
+
+window.TTIPViz = TTIPViz;

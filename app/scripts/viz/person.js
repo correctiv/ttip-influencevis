@@ -1,7 +1,7 @@
 var d3 = require('d3');
 var $ = require('jquery');
 var utils = require('../utils');
-var shared = require('./shared');
+var shared;
 var infoArea = require('./info');
 var tooltip = require('./tooltip');
 var dataHandler = require('./datahandler');
@@ -17,16 +17,18 @@ var charge = -120;
 var personRaduis = 4;
 var chapterTitleOffset = 20;
 
-var force = d3.layout.force()
-  .size([shared.width, shared.height])
-  .gravity(0.3)
-  .on('tick', tick);
-
-var x = d3.scale.ordinal()
-  .domain(d3.range(2))
-  .rangePoints([shared.width * .45 - (shared.radius * .5), shared.width * .55 + (shared.radius * .5)], 1);
+var force = d3.layout.force();
+var x = d3.scale.ordinal();
 
 function init(svgBase, activePerson, activeOrganisation) {
+  shared = require('./shared');
+
+  force.size([shared.dim.width, shared.dim.height])
+    .gravity(0.3)
+    .on('tick', tick);
+  x.domain(d3.range(2))
+    .rangePoints([shared.dim.width * .45 - (shared.dim.radius * .5), shared.dim.width * .55 + (shared.dim.radius * .5)], 1);
+
 
   svg = svgBase;
   data = dataHandler.getData();
@@ -62,13 +64,13 @@ function init(svgBase, activePerson, activeOrganisation) {
   // add data we need for the visualization
   data.persons.forEach(function(person) {
     person.cx = x(person.isEU ? 1 : 0);
-    person.cy = shared.height * .5;
+    person.cy = shared.dim.height * .5;
   });
   // add grey dots
   addUnknownPersons();
 
   personNodes = createPersonNodes()
-  
+
   // add eventhandler
   personNodes.on({
       mouseenter: handleMouseEnter,
@@ -85,10 +87,10 @@ function init(svgBase, activePerson, activeOrganisation) {
     .attrTween('r', function(d) {
       var i = d3.interpolate(0, personRaduis);
       return function(t) { return d.radius = i(t); };
-    });  
+    });
 
   // handle force
-  force.nodes(data.persons).start();  
+  force.nodes(data.persons).start();
 
   bindEvents();
 
@@ -105,7 +107,7 @@ function handleClick(e){
   shared.resetActivePerson();
   shared.resetActiveChapterPersons();
 
-  // organisation is already active. 
+  // organisation is already active.
   if(shared.activePerson && shared.activePerson === e.name){
     shared.activePerson = null;
     infoArea.reset();
@@ -116,7 +118,7 @@ function handleClick(e){
   shared.activePerson = e.name;
   shared.activeOrganisation = null;
 
-  var personSelection = d3.select('#person-' + utils.slugify(e.name));
+  var personSelection = shared.container.select('#person-' + utils.slugify(e.name));
 
   personSelection
     .style({
@@ -146,7 +148,7 @@ function handleMouseMove(e){
 
 function handleMouseEnter(e) {
 
-  // do nothing if it's a grey dot 
+  // do nothing if it's a grey dot
   if(e.isUnknown){
     return false;
   }
@@ -185,7 +187,7 @@ function handleChapter(currentPerson, e){
   if(!utils.isUndefined(chapterPersons) && chapterPersons.length > 1){
 
     var currentCenter = [e.oldX, e.oldY];
-    
+
     var nodesToMove = svg.selectAll('.person')
       .filter(function(d){
         return d.name !== e.name && chapterPersons.indexOf(d.name) !== -1;
@@ -233,16 +235,16 @@ function handleChapter(currentPerson, e){
     var isPointRight = currentCenter[0] > (svgWidth/2),
       chapterTitleLeft = isPointRight ? currentCenter[0] - (200 + chapterTitleOffset) : currentCenter[0] + chapterTitleOffset;
 
-    d3.selectAll('.chapter-title')
+    shared.container.selectAll('.chapter-title')
       .style({
         left : chapterTitleLeft + 'px',
         top : (currentCenter[1] + chapterTitleOffset) + 'px',
         display : 'block',
         'text-align': isPointRight ? 'right' : 'left'
       })
-      .html(e.chapters.toString());
+      .html(e.chapters.join(', '));
 
-      
+
     svg.selectAll('.connection').moveToFront();
     nodesToMove.moveToFront();
     currentPerson.moveToFront();
@@ -262,8 +264,8 @@ function drawLinks(e){
 
   // create links
   var links = [];
-  
-  d3.selectAll('.person-in-organisation')
+
+  shared.container.selectAll('.person-in-organisation')
     // select all parts of the organisation of the hovered person
     .filter(function(p) {
       return p.data.pId === e.id;
@@ -277,8 +279,8 @@ function drawLinks(e){
 }
 
 function resize(){
-  force.size([shared.width, shared.height]);
-  x.rangePoints([shared.width * .45 - (shared.radius * .5), shared.width * .55 + (shared.radius * .5)], 1);
+  force.size([shared.dim.width, shared.dim.height]);
+  x.rangePoints([shared.dim.width * .45 - (shared.dim.radius * .5), shared.dim.width * .55 + (shared.dim.radius * .5)], 1);
 
   force.start();
 }
@@ -338,11 +340,11 @@ function appendPersonGroup(){
 function addUnknownPersons(){
 
   for(var i = 0; i < unknownPersonCount; i++){
-    data.persons.push({ 
-      isEu : Math.random() > .5 , 
-      cx : x( Math.random() > .5 ? 1 : 0 ), 
-      cy : shared.height * .5, 
-      isUnknown : true, 
+    data.persons.push({
+      isEu : Math.random() > .5 ,
+      cx : x( Math.random() > .5 ? 1 : 0 ),
+      cy : shared.dim.height * .5,
+      isUnknown : true,
       radius : 4 })
   }
 

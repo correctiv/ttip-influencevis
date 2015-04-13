@@ -2,20 +2,25 @@ var d3 = require('d3');
 var $ = require('jquery');
 var datahandler = require('./datahandler');
 
-var personSelectLabel = 'Person auswählen';
-var organisationSelectLabel = 'Person auswählen';
+var container;
 
 
-function init(){
+var personSelectLabel = '-- Person --';
+var organisationSelectLabel = '-- Person --';
+
+
+function init(element){
+  container = element;
+
   var data = datahandler.getData(),
-    selectPerson = d3.select('#select-person'),
-    selectOrganisation = d3.select('#select-organisation'),
+    selectPerson = container.select('.select-person'),
+    selectOrganisation = container.select('.select-organisation'),
     personData = data.persons.sort(personSort),
     organisationData = data.organisations.sort(organisationSort);
 
   personData.unshift({name : personSelectLabel});
   organisationData.unshift({id : organisationSelectLabel});
-    
+
   selectPerson
     .selectAll('option')
     .data(personData)
@@ -24,7 +29,7 @@ function init(){
     .text(function(d){
       return d.name;
     });
-  
+
   selectOrganisation
     .selectAll('option')
     .data(organisationData)
@@ -38,7 +43,7 @@ function init(){
 }
 
 function bindEvents(){
-  $('#select-person').on('change', function(e){
+  $('.select-person', container[0][0]).on('change', function(e){
     var activePerson = $(this).val();
 
     if(activePerson === personSelectLabel){
@@ -47,12 +52,12 @@ function bindEvents(){
     }
 
     $(document).trigger({
-      type : 'activate:person', 
-      person : activePerson 
+      type : 'activate:person',
+      person : activePerson
     });
   });
 
-  $('#select-organisation').on('change', function(e){
+  $('.select-organisation', container[0][0]).on('change', function(e){
     var activeOrganisation = $(this).val();
 
     if(activeOrganisation === organisationSelectLabel){
@@ -60,17 +65,22 @@ function bindEvents(){
       return false;
     }
 
-    $(document).trigger({ 
-      type : 'activate:organisation', 
-      organisation : activeOrganisation 
+    $(document).trigger({
+      type : 'activate:organisation',
+      organisation : activeOrganisation
     });
   });
 }
 
+var lastNameGetter = function(x){
+  splitnames = x.name.split(' ');
+  return splitnames[splitnames.length - 1];
+};
+
 function personSort(a, b){
-  if(a.name < b.name){
+  if(lastNameGetter(a) < lastNameGetter(b)){
     return -1;
-  }else if(a.name > b.name){
+  }else if(lastNameGetter(a) > lastNameGetter(b)){
     return 1;
   }
   return 0;

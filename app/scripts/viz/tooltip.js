@@ -2,7 +2,7 @@ var utils = require('../utils');
 var d3 = require('d3');
 var Hogan = require('hogan');
 
-var tooltip = null
+var tooltip;
 var tooltipTemplatePerson = null;
 var tooltipTemplateOrganisation = null;
 
@@ -12,13 +12,13 @@ var offset = {
 };
 
 // compiles template and init tooltip dom element
-function init(){
-  tooltipTemplatePerson = Hogan.compile(d3.select('#template-tooltip-person').html());
-  tooltipTemplateOrganisation = Hogan.compile(d3.select('#template-tooltip-organisation').html());
+function init(container, lang){
+  tooltipTemplatePerson = Hogan.compile(container.select('.template-tooltip-person_' + lang).html());
+  tooltipTemplateOrganisation = Hogan.compile(container.select('.template-tooltip-organisation_' + lang).html());
 
-  tooltip = d3.select('.viz')
+  tooltip = container
     .append('div')
-    .attr('id', 'tooltip');
+    .attr('class', 'tooltip');
 }
 
 // display tooltip template. Type has to be person or organisation.
