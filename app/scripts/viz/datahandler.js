@@ -27,6 +27,10 @@ var translations ={
     de: 'Öffentlicher Arbeitgeber',
     en: 'Public sector',
   },
+  privateSector : {
+    de : 'Privater Arbeitgeber',
+    en : 'Private sector'
+  },
   commission: {
     de: 'Europäische Kommission',
     en: 'European Commission',
@@ -55,6 +59,7 @@ function init(d, lang){
   var commission =  translations.commission[lang];
   var commissionOther = translations.commissionOther[lang];
   var directorateGeneral = translations.directorateGeneral[lang];
+  var privateSector = translations.privateSector[lang];
 
   // handle person data
   var persons = getPersonsAsArray(d.persons);
@@ -81,6 +86,8 @@ function init(d, lang){
           }else{
             job.sektorType = commissionOther;
           }
+        }else if(job.sektor === privateSector){
+          job.sektorType = job.organisation;
         }else{
           job.sektorType = job.sektor;
         }
