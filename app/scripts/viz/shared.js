@@ -22,6 +22,10 @@ var activeOrganisation = null;
 var activeChapterPersons = [];
 var chapterForce = d3.layout.force();
 
+var pieRadius = d3.scale.linear()
+    .domain([300, 1200])
+    .range([40, 70]);
+
 $(document).on('reset', function(){
   resetActiveOrganisation();
   resetActivePerson();
@@ -85,8 +89,8 @@ function createBaseSVG(element) {
   dim.height = dim.width;
   dim.radius = Math.min(dim.width, dim.height) / 2;
 
-  innerArc.outerRadius(dim.radius - 70)
-          .innerRadius(dim.radius - 70);
+  innerArc.outerRadius(dim.radius - getPieRadius())
+          .innerRadius(dim.radius - getPieRadius());
 
   chapterForce.size([dim.width, dim.height])
     .gravity(0.1)
@@ -171,6 +175,10 @@ function resetActiveChapterPersons(){
     });
 }
 
+function getPieRadius(){  
+    return pieRadius(window.innerWidth);
+}
+
 // public functions
 module.exports = {
   color : d3.scale.category20c(),
@@ -189,5 +197,6 @@ module.exports = {
   resetActiveChapterPersons : resetActiveChapterPersons,
   chapterForce : chapterForce,
   personColors : personColors,
-  orgaColors: orgaColors
+  orgaColors: orgaColors,
+  getPieRadius: getPieRadius
 };

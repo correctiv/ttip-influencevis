@@ -58,8 +58,7 @@ function init(baseSvg, lang) {
   shared = require('./shared');
 
   arc.outerRadius(shared.dim.radius - 15)
-     .innerRadius(shared.dim.radius - 70);
-
+     .innerRadius(shared.dim.radius - shared.getPieRadius());
 
   svg = baseSvg;
   data = dataHandler.getData();
