@@ -65,7 +65,7 @@ function appendCircleMask(svg) {
     .append('mask')
     .attr('id', 'mask-circle')
     .append('circle')
-    .attr('r', dim.radius - 70)
+    .attr('r', dim.radius - getPieRadius())
     .attr('cx', dim.width / 2)
     .attr('cy', dim.height / 2)
     .style('fill', '#fff');
