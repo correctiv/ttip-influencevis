@@ -5,79 +5,199 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="A description.">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-   
+
     <title>TTIP Visualization</title>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css">
     <link rel="stylesheet" href="css/main.css">
   </head>
   <body>
-    <div class="viz clearfix">
-      
-      <div class="select-boxes">
+
+    <div class="ttip-viz clearfix" id="my-id">
+
+      <div class="viz-core">
+        <div class="chapter-title"></div>
+      </div>
+
+      <div class="viz-info">
+        <div class="select-boxes">
           <div class="select-wrapper">
-            <select id="select-person"></select>
+            <select class="select-person"></select>
           </div>
           <div class="select-wrapper">
-            <select id="select-organisation">
-              <option>Organisation auswählen</option>
+            <select class="select-organisation">
+              <option>-- Organisation --</option>
             </select>
           </div>
-      </div>
-      
-      <div id="visualization" class="viz-core">
-        <div class="chapter-title"></div>
+        </div>
 
-      </div>
-      <div class="viz-info">
         <div class="viz-info-close">&times;</div>
         <div class="viz-info-content"></div>
-      </div>  
-    </div>
-    
-    
+      </div>
+
+
     <!-- we use this template to display the person tooltip -->
-    <script id="template-info-person" type="template/text">
+    <script class="template-info-person_de" type="template/text">
 
       <div class="info-person">
 
         <div class="info-headline">Person</div>
-        <div class="info-title">{{name}}</div>
-        {{#chapters}}<div class="info-subtitle">Verhandler: {{chapters}}</div>{{/chapters}}
-        <div class="info-subtitle"><strong>{{ttip_institution}}</strong></div>
+        <h2 class="info-title">{{name}}</h2>
+        <div class="info-subtitle">
+          {{ttip_position}}
+        </div>
+        <ul class="chapter-list">
+        {{#chapters}}
+          <li>{{.}}</li>
+        {{/chapters}}
+        </ul>
+
+        <div class="info-organisation-name">{{ttip_institution}}</div>
 
         {{#hasJobs}}
-        <div class="info-headline">Biographie</div>
+        <h3 class="info-headline">Biographie</h3>
 
         <ul class="info-person-organisations info-list">
-
         {{#jobs}}
           <li class="info-person-organisation">
             <span style="display:none" class="sektor-name">{{sektorType}}</span>
-            <span class="color-box" style="background-color: {{color}};"></span>
-            <strong>{{organisation}}</strong>
-            {{#position}}<br />{{position}} {{/position}}
-            {{#dateLabel}}<br /><i>{{dateLabel}}</i>{{/dateLabel}}
+            <h4 class="info-person-organisation__title">
+              <span class="color-box" style="background-color: {{color}};"></span>
+              <span class="info-person-organisation__organisation-name">{{organisation}}</span>
+            </h4>
+            {{#position}}<span class="info-person-organisation__position">{{position}}</span>{{/position}}
+            {{#dateLabel}}<span class="info-person-organisation__date">({{dateLabel}})</span>{{/dateLabel}}
           </li>
         {{/jobs}}
         </ul>
 
         {{/hasJobs}}
 
-        
+
       </div>
 
     </script>
-  
+
 
     <!-- we use this template to display the organisation tooltip -->
-    <script id="template-info-organisation" type="template/text">
+    <script class="template-info-organisation_de" type="template/text">
+
+      <div class="info-organisation">
+
+        <div class="info-headline">Organisation</div>
+
+        <h3 class="info-title">{{id}}</h3>
+        <div class="info-subtitle">Folgende Personen haben oder hatten Verbindungen zu dieser Organisation:</div>
+
+        <ul class="info-organisation-persons info-list">
+        {{#persons}}
+          <li class="info-organisation-person"><span class="color-box" style="background-color: {{color}};"></span>{{name}}</li>
+        {{/persons}}
+        </ul>
+
+      </div>
+
+    </script>
+
+
+
+    <!-- we use this template to display the standard tooltip content -->
+    <script class="template-info-intro_de" type="template/text">
+
+      <div class="info-intro">
+        <div class="info-headline">Legende</div>
+        <ul class="legend">
+          <li class="legend__organisation-title">
+            <span class="color-box" style="background-color: #325a7c;"></span>
+            Europäische Kommission
+          </li>
+          <li class="legend__organisation-title">
+            <span class="color-box" style="background-color: #3e74a0;"></span>
+            Andere öffentliche Arbeitgeber in Europa
+          </li>
+          <li class="legend__organisation-title">
+            <span class="color-box" style="background-color: #db2e4c;"></span>
+            US-Handelsbehörde (USTR)
+          </li>
+          <li class="legend__organisation-title">
+            <span class="color-box" style="background-color: #e9473e;"></span>
+            Andere öffentliche Arbeitgeber in den USA
+          </li>
+          <li class="legend__organisation-title">
+            <span class="color-box" style="background-color: #808080;"></span>
+            Private Arbeitgeber
+          </li>
+        </ul>
+      </div>
+
+    </script>
+
+
+    <script class="template-tooltip-person_de" type="template/text">
+
+      <div class="tooltip-title">{{title}}</div>
+      <div class="tooltip-person-text">hat <strong>{{count}}</strong> Verbindungen zu Organisationen.</div>
+      <div class="tooltip-subtitle">Aktuell bei {{subtitle}}.</div>
+
+    </script>
+
+    <script class="template-tooltip-organisation_de" type="template/text">
+
+      <div class="tooltip-title">{{title}}</div>
+      <div class="tooltip-subtitle">Es gibt <strong>{{count}}</strong>  Verbindungen zu dieser Organisation.</div>
+
+    </script>
+
+    <!-- Translation -->
+
+    <script class="template-info-person_en" type="template/text">
+
+      <div class="info-person">
+
+        <div class="info-headline">Person</div>
+        <div class="info-title">{{name}}</div>
+        <div class="info-subtitle">{{ttip_position}}</div>
+        <ul class="chapter-list">
+        {{#chapters}}
+          <li>{{.}}</li>
+        {{/chapters}}
+        </ul>
+        <div class="info-organisation-name">{{ttip_institution}}</div>
+
+        {{#hasJobs}}
+        <div class="info-headline">Biography</div>
+
+        <ul class="info-person-organisations info-list">
+        {{#jobs}}
+          <li class="info-person-organisation">
+            <span style="display:none" class="sektor-name">{{sektorType}}</span>
+            <h4 class="info-person-organisation__title">
+              <span class="color-box" style="background-color: {{color}};"></span>
+              <span class="info-person-organisation__organisation-name">{{organisation}}</span>
+            </h4>
+            {{#position}}<span class="info-person-organisation__position">{{position}}</span>{{/position}}
+            {{#dateLabel}}<span class="info-person-organisation__date">({{dateLabel}})</span>{{/dateLabel}}
+          </li>
+        {{/jobs}}
+        </ul>
+
+        {{/hasJobs}}
+
+
+      </div>
+
+    </script>
+
+
+    <!-- we use this template to display the organisation tooltip -->
+    <script class="template-info-organisation_en" type="template/text">
 
       <div class="info-organisation">
 
         <div class="info-headline">Organisation</div>
 
         <div class="info-title">{{id}}</div>
-        <div class="info-subtitle">Folgende Personen haben oder hatten Verbindungen zu dieser Organisation:</div>
+        <div class="info-subtitle">The following persons have or had connections to these organisations:</div>
 
         <ul class="info-organisation-persons info-list">
         {{#persons}}
@@ -89,40 +209,67 @@
       </div>
 
     </script>
-    
+
 
 
     <!-- we use this template to display the standard tooltip content -->
-    <script id="template-info-intro" type="template/text">
+    <script class="template-info-intro_en" type="template/text">
 
       <div class="info-intro">
-        
-        <div class="info-headline">Info</div>
-        <div class="info-subtitle">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi reprehenderit aliquam blanditiis autem iusto atque aperiam, eligendi mollitia sint in sunt ullam consequatur est obcaecati quisquam minus accusamus eaque, labore.<br />Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi reprehenderit aliquam blanditiis autem iusto atque aperiam, eligendi mollitia sint in sunt ullam consequatur est obcaecati quisquam minus accusamus eaque, labore.</div>
-      
+        <div class="info-headline">Legend</div>
+        <ul class="legend">
+          <li class="legend__organisation-title">
+            <span class="color-box" style="background-color: #325a7c;"></span>
+            European Commission
+          </li>
+          <li class="legend__organisation-title">
+            <span class="color-box" style="background-color: #3e74a0;"></span>
+            Public sector in Europe
+          </li>
+          <li class="legend__organisation-title">
+            <span class="color-box" style="background-color: #db2e4c;"></span>
+            United States Trade Representative (USTR)
+          </li>
+          <li class="legend__organisation-title">
+            <span class="color-box" style="background-color: #e9473e;"></span>
+            Public sector in the United States
+          </li>
+          <li class="legend__organisation-title">
+            <span class="color-box" style="background-color: #808080;"></span>
+            Private sector
+          </li>
+        </ul>
       </div>
 
     </script>
-  
 
-    <script id="template-tooltip-person" type="template/text">
+
+    <script class="template-tooltip-person_en" type="template/text">
 
       <div class="tooltip-title">{{title}}</div>
-      <div class="tooltip-person-text">hat <strong>{{count}}</strong> Verbindungen zu Organisationen.</div>
-      <div class="tooltip-subtitle">Aktuell bei {{subtitle}}.</div> 
+      <div class="tooltip-person-text">has <strong>{{count}}</strong> connections to organisations.</div>
+      <div class="tooltip-subtitle">Currently at {{subtitle}}.</div>
 
     </script>
 
-    <script id="template-tooltip-organisation" type="template/text">
+    <script class="template-tooltip-organisation_en" type="template/text">
 
-      <div class="tooltip-title">{{title}}</div>  
-      <div class="tooltip-subtitle"><strong>{{count}}</strong> Verhandler haben für diese Organisation gearbeitet.</div>
+      <div class="tooltip-title">{{title}}</div>
+      <div class="tooltip-subtitle">There are <strong>{{count}}</strong> connections to this organisation.</div>
 
     </script>
 
-
-    
+    </div>
 
   	<script src="js/main.js"></script>
+    <script>
+      TTIPViz.init(
+        document.getElementById('my-id'),
+        {
+          path: document.location.pathname,
+          lang: document.location.search.substr(1)
+        }
+      );
+    </script>
   </body>
 </html>
